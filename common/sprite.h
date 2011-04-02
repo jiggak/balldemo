@@ -19,8 +19,8 @@ private:
    matrix3 _model_view;
 
    static GLuint s_program;
-   static GLuint s_a_position_loc;
-   static GLuint s_u_mvp_matrix_loc;
+   static GLint s_a_position_loc;
+   static GLint s_u_mvp_matrix_loc;
 
    static const GLfloat s_verts[8];
 

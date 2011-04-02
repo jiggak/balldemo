@@ -13,8 +13,8 @@ const GLfloat sprite::s_verts[8] = {
 };
 
 GLuint sprite::s_program = 0;
-GLuint sprite::s_a_position_loc = 0;
-GLuint sprite::s_u_mvp_matrix_loc = 0;
+GLint sprite::s_a_position_loc = -1;
+GLint sprite::s_u_mvp_matrix_loc = -1;
 
 sprite::sprite(const sprite & other)
    : _stage(other._stage), _width(other._width), _height(other._height)
