@@ -13,7 +13,7 @@ stage::stage(const GLuint w, const GLuint h)
    _projection = matrix3::ortho2d(0, w, 0, h);
 
    // TODO create a list of sprites
-   _sprite = new sprite(*this, 50, 50);
+   _sprite = sprite::from_texture(*this, "/home/josh/Beach_Ball.tga");
 }
 
 stage::~stage()
@@ -25,6 +25,9 @@ bool stage::setupGl(const GLuint w, const GLuint h)
 {
    if (!sprite::setupGl())
       return false;
+
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
    glViewport(0, 0, w, h);
 

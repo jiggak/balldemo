@@ -15,6 +15,6 @@
 
 #else
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #endif
