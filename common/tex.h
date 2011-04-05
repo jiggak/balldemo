@@ -30,7 +30,7 @@ typedef struct {
    uint8_t image_descriptor;
 } __attribute__((__packed__)) tga_header_t;
 
-tex_t* texLoadTGA(const char * fname);
+tex_t* texLoadTGA(const char * data, const int size);
 
 void texFree(tex_t *texture);
 

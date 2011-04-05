@@ -109,9 +109,9 @@ GLuint glutilLoadTexture(const tex_t * texture)
 
    glTexImage2D(
          GL_TEXTURE_2D, 0, /* target, level of detail */
-         GL_RGBA8, /* internal format */
+         GL_RGBA, /* internal format */
          texture->width, texture->height, 0, /* width, height, border */
-         GL_BGRA, GL_UNSIGNED_BYTE, /* external format, type */
+         GL_RGBA, GL_UNSIGNED_BYTE, /* external format, type */
          texture->pixels
    );
 

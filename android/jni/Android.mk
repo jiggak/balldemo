@@ -7,6 +7,7 @@ LOCAL_C_INCLUDES := ../common
 LOCAL_SRC_FILES  := logging.cpp \
    ../../common/glutils.cpp \
    ../../common/matrix.cpp \
+   ../../common/tex.cpp \
    ../../common/sprite.cpp \
    ../../common/stage.cpp \
    main.cpp

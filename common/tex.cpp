@@ -6,57 +6,41 @@
  */
 #include "tex.h"
 #include "logging.h"
-#include <fstream>
+#include <string.h>
 
-using namespace std;
-
-tex_t* texLoadTGA(const char * fname)
+tex_t* texLoadTGA(const char * data, const int size)
 {
-   ifstream f(fname, ios::in|ios::binary);
-   if (!f.is_open()) {
-      logError("unable to open file %s", fname);
-      return NULL;
-   }
+   int cursor = 0;
 
-   tga_header_t header;
-   if (!f.read((char*)&header, sizeof(tga_header_t)).good()) {
-      logError("reader read failed on %s", fname);
-      return NULL;
-   }
+   tga_header_t *header = (tga_header_t*)data;
+   cursor += sizeof(tga_header_t);
 
-   if (header.data_type_code != 2) {
-      logError("%s has incomplete tga header");
-      return NULL;
-   }
+   cursor += header->id_length;
 
-   if (header.bits_per_pixel != 32) {
-      logError("%s is not a 32-bit uncompressed RGB tga file", fname);
-      return NULL;
-   }
-
-   if (!f.seekg(header.id_length, ios::cur).good()) {
-      logError("%s has incomplete id string", fname);
-      return NULL;
-   }
-
-   int color_map_size = header.color_map_length * (header.color_map_depth/8);
-   if (!f.seekg(color_map_size, ios::cur).good()) {
-      logError("%s has incomplete color map", fname);
-      return NULL;
-   }
+   int color_map_size = header->color_map_length * (header->color_map_depth/8);
+   cursor += color_map_size;
 
    tex_t *texture = new tex_t;
 
-   texture->width = header.width;
-   texture->height = header.height;
+   texture->width = header->width;
+   texture->height = header->height;
 
-   uint bufsz = header.width * header.height * (header.bits_per_pixel/8);
+   uint bufsz = header->width * header->height * (header->bits_per_pixel/8);
    texture->pixels = new uint8_t[bufsz];
 
-   f.read((char*)texture->pixels, bufsz);
-   if (f.gcount() != bufsz) {
-      logError("%s has incomplete image", fname);
+   if (bufsz > (size - cursor)) {
+      logError("tga file has incomplete pixel data");
+      texFree(texture);
       return NULL;
+   }
+
+   memcpy(texture->pixels, data+cursor, bufsz);
+
+   // TGA pixel data is BGR packed, convert to RGB
+   for (uint i=0; i<bufsz; i+=4) {
+      uint8_t b = texture->pixels[i];
+      texture->pixels[i] = texture->pixels[i+2];
+      texture->pixels[i+2] = b;
    }
 
    return texture;

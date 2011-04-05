@@ -6,6 +6,8 @@
 #include "shaders.h"
 #include "tex.h"
 
+#include "assets.h"
+
 GLuint sprite::s_program = 0;
 GLint sprite::s_a_position_loc = -1;
 GLint sprite::s_u_mvp_matrix_loc = -1;
@@ -27,7 +29,7 @@ sprite::sprite(const stage & s, const tex_t * texture)
 
 sprite * sprite::from_texture(const stage & s, const char * fname)
 {
-   tex_t *texture = texLoadTGA(fname);
+   tex_t *texture = texLoadTGA(ball_tga, ball_tga_size);
    if (!texture) {
       return NULL;
    }
