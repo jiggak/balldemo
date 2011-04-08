@@ -15,7 +15,7 @@
 stage::stage(const GLuint w, const GLuint h)
    : _width(w), _height(h)
 {
-   _projection = matrix3::ortho2d(0, w, 0, h);
+   _projection = matrix4::ortho2d(0, w, 0, h);
 
    // real life acceleration of gravity
    b2Vec2 gravity(0, -9.81f);
@@ -89,13 +89,18 @@ unsigned int stage::w2s(float f)
 const GLuint stage::width() const { return _width; }
 const GLuint stage::height() const { return _height; }
 
-const matrix3 & stage::projection() const { return _projection; }
+const matrix4 & stage::projection() const { return _projection; }
 
 b2World* stage::world() const { return _world; }
 
 void stage::addSprite(const sprite * s)
 {
    _sprites.add(s);
+}
+
+void stage::advance()
+{
+   _world->Step(0.016f, 10.0f, 10.0f);
 }
 
 void stage::render()

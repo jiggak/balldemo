@@ -18,7 +18,7 @@ class b2World;
 class stage {
 private:
    GLuint _width, _height;
-   matrix3 _projection;
+   matrix4 _projection;
    b2World* _world;
    list<sprite> _sprites;
 
@@ -34,12 +34,13 @@ public:
    const GLuint width() const;
    const GLuint height() const;
 
-   const matrix3 & projection() const;
+   const matrix4 & projection() const;
 
    b2World* world() const;
 
    void addSprite(const sprite * s);
 
+   void advance();
    void render();
 };
 

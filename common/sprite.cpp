@@ -78,11 +78,16 @@ bool sprite::setupGL()
 
 void sprite::render()
 {
+   matrix4 modelView = matrix4::identity();
+
+   modelView.translate(stage::w2s(_body->GetPosition().x),
+         stage::w2s(_body->GetPosition().y), 0.0f);
+
    glUseProgram(s_program);
 
    glUniform2f(s_u_size, (GLfloat)_width, (GLfloat)_height);
-   glUniformMatrix3fv(s_u_projection, 1, GL_FALSE, _stage.projection().m());
-   glUniformMatrix3fv(s_u_model_view, 1, GL_FALSE, matrix3::identity().m());
+   glUniformMatrix4fv(s_u_projection, 1, GL_FALSE, _stage.projection().m());
+   glUniformMatrix4fv(s_u_model_view, 1, GL_FALSE, modelView.m());
 
    glVertexAttribPointer(s_a_position, 2, GL_FLOAT, GL_FALSE, 0, _verts);
    glEnableVertexAttribArray(s_a_position);
@@ -112,7 +117,7 @@ sprite * sprite::ballSprite(const stage & s, GLuint x, GLuint y)
    texFree(texture);
 
    b2CircleShape circle;
-   circle.m_radius = stage::s2w(texture->width);
+   circle.m_radius = stage::s2w(result->_width / 2);
 
    b2FixtureDef ballShapeDef;
    ballShapeDef.shape = &circle;

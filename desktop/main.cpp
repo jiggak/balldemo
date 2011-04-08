@@ -20,6 +20,12 @@ void render() {
    glutSwapBuffers();
 }
 
+void update(int i) {
+   glutTimerFunc(16, &update, 0);
+   g_stage->advance();
+   glutPostRedisplay();
+}
+
 int main(int argc, char *argv[])
 {
    glutInit(&argc, argv);
@@ -28,6 +34,7 @@ int main(int argc, char *argv[])
 
    glutCreateWindow("BallDemo");
    glutDisplayFunc(&render);
+   glutTimerFunc(0, &update, 0);
    
    glewInit();
    if (!GLEW_VERSION_2_0) {
@@ -41,7 +48,7 @@ int main(int argc, char *argv[])
    }
    
    g_stage = new stage(WIDTH, HEIGHT);
-   g_stage->addSprite(sprite::ballSprite(*g_stage, 100, 100));
+   g_stage->addSprite(sprite::ballSprite(*g_stage, 400, 400));
 
    logInfo("entering main loop");
    glutMainLoop();
