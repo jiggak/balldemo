@@ -1,6 +1,14 @@
+UNAME=$(shell uname)
 CC=g++
-LDFLAGS=-lGL -lGLEW -lglut
-CFLAGS=-g -Wall -I../common
+
+ifeq ($(UNAME), Linux)
+   LDFLAGS=-lGL -lGLEW -lglut
+   CFLAGS=-g -Wall -I../common
+endif
+ifeq ($(UNAME), Darwin)
+   LDFLAGS=-framework GLUT -framework OpenGL -L/opt/local/lib -lGLEW
+   CFLAGS=-g -Wall -I../common -I/opt/local/include
+endif
 
 OUTPUT=balldemo
 
