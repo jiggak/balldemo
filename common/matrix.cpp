@@ -77,6 +77,21 @@ void matrix3::scale(const GLfloat sx, const GLfloat sy, const GLfloat sz)
    _m[8] *= sz;
 }
 
+void matrix3::translate(const GLfloat tx, const GLfloat ty, const GLfloat tz)
+{
+   _m[0] *= sx;
+   _m[1] *= sx;
+   _m[2] *= sx;
+
+   _m[3] *= sy;
+   _m[4] *= sy;
+   _m[5] *= sy;
+
+   _m[6] *= sz;
+   _m[7] *= sz;
+   _m[8] *= sz;
+}
+
 matrix3 matrix3::operator*(const matrix3 & other)
 {
    GLfloat result[9];

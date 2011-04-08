@@ -27,6 +27,7 @@ public:
    const GLfloat* m() const;
 
    void scale(const GLfloat sx, const GLfloat sy, const GLfloat sz);
+   void translate(const GLfloat tx, const GLfloat ty, const GLfloat tz);
 
    matrix3 operator*(const matrix3 & other);
 

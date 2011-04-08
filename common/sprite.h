@@ -8,36 +8,44 @@
 #define SPRITE_H_
 
 #include "opengl.h"
-#include "matrix.h"
 
 class stage;
+
+class b2Body;
+struct b2BodyDef;
+
 struct tex_t;
 
 class sprite {
 private:
+   /// linked program object handle
    static GLuint s_program;
-   static GLint s_a_position_loc;
-   static GLint s_u_mvp_matrix_loc;
-   static GLint s_u_texture_loc;
+
+   /// vertex array attribute handle
+   static GLint s_a_position;
+
+   /// uniform handles
+   static GLint s_u_texture;
+   static GLint s_u_projection;
+   static GLint s_u_model_view;
+   static GLint s_u_size;
 
    const stage & _stage;
+   b2Body * _body;
+
    GLuint _width, _height;
-   matrix3 _model_view;
 
    GLfloat _verts[8];
    GLuint _texture;
 
-   void init();
-
 public:
-   sprite(const sprite & other);
-   sprite(const stage & s, const tex_t * texture);
+   static bool setupGL();
 
-   static sprite * from_texture(const stage & s, const char * fname);
-
-   static bool setupGl();
+   sprite(const stage & s, const tex_t * texture, const b2BodyDef * def);
 
    void render();
+
+   static sprite * ballSprite(const stage & s, GLuint x, GLuint y);
 };
 
 #endif

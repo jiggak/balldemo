@@ -3,14 +3,15 @@
 
 #include "logging.h"
 #include "stage.h"
+#include "sprite.h"
 
 #define WIDTH  800
 #define HEIGHT 480
 
-stage *gstage = NULL;
+stage *g_stage = NULL;
 
 void render() {
-   gstage->render();
+   g_stage->render();
    glutSwapBuffers();
 }
 
@@ -29,17 +30,18 @@ int main(int argc, char *argv[])
       return 1;
    }
    
-   gstage = new stage(WIDTH, HEIGHT);
-   
-   if (!stage::setupGl(WIDTH, HEIGHT)) {
+   if (!stage::setupGL(WIDTH, HEIGHT)) {
       logError("sprite::setupGl failed");
       return 1;
    }
    
+   g_stage = new stage(WIDTH, HEIGHT);
+   g_stage->addSprite(sprite::ballSprite(*g_stage, 100, 100));
+
    logInfo("entering main loop");
    glutMainLoop();
    
-   delete gstage;
+   delete g_stage;
 
    return 0;
 }
