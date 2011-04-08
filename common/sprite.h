@@ -27,7 +27,8 @@ private:
    /// uniform handles
    static GLint s_u_texture;
    static GLint s_u_projection;
-   static GLint s_u_model_view;
+   static GLint s_u_translation;
+   static GLint s_u_rotation;
    static GLint s_u_size;
 
    const stage & _stage;

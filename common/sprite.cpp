@@ -15,7 +15,8 @@ GLuint sprite::s_program = 0;
 GLint sprite::s_a_position = -1;
 GLint sprite::s_u_texture = -1;
 GLint sprite::s_u_projection = -1;
-GLint sprite::s_u_model_view = -1;
+GLint sprite::s_u_translation = -1;
+GLint sprite::s_u_rotation = -1;
 GLint sprite::s_u_size = -1;
 
 sprite::sprite(const stage & s, const tex_t * texture, const b2BodyDef * def)
@@ -55,9 +56,15 @@ bool sprite::setupGL()
       return false;
    }
 
-   s_u_model_view = glGetUniformLocation(s_program, "u_model_view");
-   if (s_u_model_view == -1) {
-      logError("uniform 'u_model_view' not found");
+   s_u_translation = glGetUniformLocation(s_program, "u_translation");
+   if (s_u_translation == -1) {
+      logError("uniform 'u_translation' not found");
+      return false;
+   }
+
+   s_u_rotation = glGetUniformLocation(s_program, "u_rotation");
+   if (s_u_rotation == -1) {
+      logError("uniform 'u_rotation' not found");
       return false;
    }
 
@@ -78,16 +85,17 @@ bool sprite::setupGL()
 
 void sprite::render()
 {
-   matrix4 modelView = matrix4::identity();
-
-   modelView.translate(stage::w2s(_body->GetPosition().x),
-         stage::w2s(_body->GetPosition().y), 0.0f);
+   GLfloat tx = stage::w2s(_body->GetPosition().x);
+   GLfloat ty = stage::w2s(_body->GetPosition().y);
+   matrix4 t = matrix4::translation(tx, ty, 0.0f);
+   matrix4 r = matrix4::rotation(-_body->GetAngle(), 0.0f, 0.0f, 1.0f);
 
    glUseProgram(s_program);
 
    glUniform2f(s_u_size, (GLfloat)_width, (GLfloat)_height);
    glUniformMatrix4fv(s_u_projection, 1, GL_FALSE, _stage.projection().m());
-   glUniformMatrix4fv(s_u_model_view, 1, GL_FALSE, modelView.m());
+   glUniformMatrix4fv(s_u_translation, 1, GL_FALSE, t.m());
+   glUniformMatrix4fv(s_u_rotation, 1, GL_FALSE, r.m());
 
    glVertexAttribPointer(s_a_position, 2, GL_FLOAT, GL_FALSE, 0, _verts);
    glEnableVertexAttribArray(s_a_position);

@@ -1,6 +1,12 @@
 #include "matrix.h"
 #include "logging.h"
 
+#include <cmath>
+
+#define PI 3.1415926535897932384626433832795f
+#define TO_RADIANS(deg) (deg * PI / 180.0f)
+#define TO_DEGREES(rad) (rad * 180f / PI)
+
 matrix4 matrix4::identity()
 {
    const GLfloat m[] = {
@@ -39,6 +45,49 @@ matrix4 matrix4::ortho2d(const GLint left, const GLint right,
 
    return matrix4(m);
    //return matrix4::ortho(left, right, bottom, top, -1, 1);
+}
+
+matrix4 matrix4::translation(const GLfloat tx, const GLfloat ty, const GLfloat tz)
+{
+   const GLfloat m[] = {
+         1.0f, 0.0f, 0.0f, tx,
+         0.0f, 1.0f, 0.0f, ty,
+         0.0f, 0.0f, 1.0f, tz,
+         0.0f, 0.0f, 0.0f, 1.0f
+   };
+
+   return matrix4(m);
+}
+
+matrix4 matrix4::rotation(const GLfloat radians, GLfloat x, GLfloat y, GLfloat z)
+{
+   GLfloat mag = sqrt(x * x + y * y + z * z);
+   GLfloat sinAngle = sin(radians);
+   GLfloat cosAngle = cos(radians);
+
+   x /= mag;
+   y /= mag;
+   z /= mag;
+
+   GLfloat xx = x * x;
+   GLfloat yy = y * y;
+   GLfloat zz = z * z;
+   GLfloat xy = x * y;
+   GLfloat yz = y * z;
+   GLfloat zx = z * x;
+   GLfloat xs = x * sinAngle;
+   GLfloat ys = y * sinAngle;
+   GLfloat zs = z * sinAngle;
+   GLfloat oneMinusCos = 1.0f - cosAngle;
+
+   const GLfloat m[] = {
+         (oneMinusCos * xx) + cosAngle, (oneMinusCos * xy) + zs, (oneMinusCos * zx) - ys, 0.0f,
+         (oneMinusCos * xy) - zs, (oneMinusCos * yy) + cosAngle, (oneMinusCos * yz) + xs, 0.0f,
+         (oneMinusCos * zx) + ys, (oneMinusCos * yz) - xs, (oneMinusCos * zz) + cosAngle, 0.0f,
+         0.0f, 0.0f, 0.0f, 1.0f
+   };
+
+   return matrix4(m);
 }
 
 matrix4::matrix4()
@@ -87,42 +136,60 @@ void matrix4::scale(const GLfloat sx, const GLfloat sy, const GLfloat sz)
 
 void matrix4::translate(const GLfloat tx, const GLfloat ty, const GLfloat tz)
 {
-   _m[3]  += (_m[0] * tx)  + (_m[1] * ty)  + (_m[2] * tz);
-   _m[7]  += (_m[4] * tx)  + (_m[5] * ty)  + (_m[6] * tz);
-   _m[11] += (_m[8] * tx)  + (_m[9] * ty)  + (_m[10] * tz);
-   _m[15] += (_m[12] * tx) + (_m[13] * ty) + (_m[14] * tz);
+   *this = *this * matrix4::translation(tx, ty, tz);
 }
 
-matrix4 matrix4::operator*(const matrix4 & other)
+void matrix4::rotate(const GLfloat radians, GLfloat x, GLfloat y, GLfloat z)
+{
+   *this = *this * matrix4::rotation(radians, x, y, z);
+}
+
+matrix4 matrix4::operator*(const matrix4 & rhs)
 {
    GLfloat result[16];
-   const GLfloat *o = other.m();
+   const GLfloat *r = rhs.m();
 
-   result[0] = (_m[0] * o[0]) + (_m[1] * o[4]) + (_m[2] * o[8])  + (_m[3] * o[12]);
-   result[1] = (_m[0] * o[1]) + (_m[1] * o[5]) + (_m[2] * o[9])  + (_m[3] * o[13]);
-   result[2] = (_m[0] * o[2]) + (_m[1] * o[6]) + (_m[2] * o[10]) + (_m[3] * o[14]);
-   result[3] = (_m[0] * o[3]) + (_m[1] * o[7]) + (_m[2] * o[11]) + (_m[3] * o[15]);
+   result[0] = (_m[0] * r[0]) + (_m[1] * r[4]) + (_m[2] * r[8])  + (_m[3] * r[12]);
+   result[1] = (_m[0] * r[1]) + (_m[1] * r[5]) + (_m[2] * r[9])  + (_m[3] * r[13]);
+   result[2] = (_m[0] * r[2]) + (_m[1] * r[6]) + (_m[2] * r[10]) + (_m[3] * r[14]);
+   result[3] = (_m[0] * r[3]) + (_m[1] * r[7]) + (_m[2] * r[11]) + (_m[3] * r[15]);
 
-   result[4] = (_m[4] * o[0]) + (_m[5] * o[4]) + (_m[6] * o[8])  + (_m[7] * o[12]);
-   result[5] = (_m[4] * o[1]) + (_m[5] * o[5]) + (_m[6] * o[9])  + (_m[7] * o[13]);
-   result[6] = (_m[4] * o[2]) + (_m[5] * o[6]) + (_m[6] * o[10]) + (_m[7] * o[14]);
-   result[7] = (_m[4] * o[3]) + (_m[5] * o[7]) + (_m[6] * o[11]) + (_m[7] * o[15]);
+   result[4] = (_m[4] * r[0]) + (_m[5] * r[4]) + (_m[6] * r[8])  + (_m[7] * r[12]);
+   result[5] = (_m[4] * r[1]) + (_m[5] * r[5]) + (_m[6] * r[9])  + (_m[7] * r[13]);
+   result[6] = (_m[4] * r[2]) + (_m[5] * r[6]) + (_m[6] * r[10]) + (_m[7] * r[14]);
+   result[7] = (_m[4] * r[3]) + (_m[5] * r[7]) + (_m[6] * r[11]) + (_m[7] * r[15]);
 
-   result[8]  = (_m[8] * o[0]) + (_m[9] * o[4]) + (_m[10] * o[8])  + (_m[11] * o[12]);
-   result[9]  = (_m[8] * o[1]) + (_m[9] * o[5]) + (_m[10] * o[9])  + (_m[11] * o[13]);
-   result[10] = (_m[8] * o[2]) + (_m[9] * o[6]) + (_m[10] * o[10]) + (_m[11] * o[14]);
-   result[11] = (_m[8] * o[3]) + (_m[9] * o[7]) + (_m[10] * o[11]) + (_m[11] * o[15]);
+   result[8]  = (_m[8] * r[0]) + (_m[9] * r[4]) + (_m[10] * r[8])  + (_m[11] * r[12]);
+   result[9]  = (_m[8] * r[1]) + (_m[9] * r[5]) + (_m[10] * r[9])  + (_m[11] * r[13]);
+   result[10] = (_m[8] * r[2]) + (_m[9] * r[6]) + (_m[10] * r[10]) + (_m[11] * r[14]);
+   result[11] = (_m[8] * r[3]) + (_m[9] * r[7]) + (_m[10] * r[11]) + (_m[11] * r[15]);
 
-   result[12] = (_m[12] * o[0]) + (_m[13] * o[4]) + (_m[14] * o[8])  + (_m[15] * o[12]);
-   result[13] = (_m[12] * o[1]) + (_m[13] * o[5]) + (_m[14] * o[9])  + (_m[15] * o[13]);
-   result[14] = (_m[12] * o[2]) + (_m[13] * o[6]) + (_m[14] * o[10]) + (_m[15] * o[14]);
-   result[15] = (_m[12] * o[3]) + (_m[13] * o[7]) + (_m[14] * o[11]) + (_m[15] * o[15]);
+   result[12] = (_m[12] * r[0]) + (_m[13] * r[4]) + (_m[14] * r[8])  + (_m[15] * r[12]);
+   result[13] = (_m[12] * r[1]) + (_m[13] * r[5]) + (_m[14] * r[9])  + (_m[15] * r[13]);
+   result[14] = (_m[12] * r[2]) + (_m[13] * r[6]) + (_m[14] * r[10]) + (_m[15] * r[14]);
+   result[15] = (_m[12] * r[3]) + (_m[13] * r[7]) + (_m[14] * r[11]) + (_m[15] * r[15]);
 
    return matrix4(result);
 }
 
+matrix4 & matrix4::operator=(const matrix4 & rhs)
+{
+   const GLfloat *r = rhs.m();
+   for (int i=0; i<16; i++) {
+      _m[i] = r[i];
+   }
+
+   return *this;
+}
+
 void matrix4::print() const
 {
-   logInfo("[%7.4f, %7.4f, %7.4f, %7.4f]\n[%7.4f, %7.4f, %7.4f, %7.4f]\n[%7.4f, %5.2f, %7.4f, %7.4f]\n[%7.4f, %5.2f, %7.4f, %7.4f]\n",
-         _m[0],_m[1],_m[2],_m[3],_m[4],_m[5],_m[6],_m[7],_m[8], _m[9],_m[10],_m[11],_m[12],_m[13],_m[14],_m[15]);
+   logInfo("[%7.4f, %7.4f, %7.4f, %7.4f]\n"
+           "[%7.4f, %7.4f, %7.4f, %7.4f]\n"
+           "[%7.4f, %5.2f, %7.4f, %7.4f]\n"
+           "[%7.4f, %5.2f, %7.4f, %7.4f]",
+         _m[0],_m[1],_m[2],_m[3],
+         _m[4],_m[5],_m[6],_m[7],
+         _m[8],_m[9],_m[10],_m[11],
+         _m[12],_m[13],_m[14],_m[15]);
 }
