@@ -14,6 +14,8 @@ private:
    struct node {
       const T * value;
       node * next;
+
+      node(const T * val) : value(val), next(0) { }
    } * _first;
 
    struct node * _last;
@@ -33,13 +35,10 @@ public:
 
    void add(const T * value) {
       if (!_first) {
-         _last = _first = new node;
-         _first->value = value;
-         _first->next = 0;
+         _last = _first = new node(value);
       } else {
-         _last->next = new node;
-         _last->value = value;
-         _last->next = 0;
+         _last->next = new node(value);
+         _last = _last->next;
       }
 
       _count ++;
