@@ -25,8 +25,8 @@ public class BallDemo extends Activity {
     public static native void init(int width, int height);
     public static native void touchUp(int x, int y);
     
+    private Renderer renderer;
     private GLSurfaceView view;
-    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,21 @@ public class BallDemo extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        view = new GLSurfaceView(getApplication());
+        view = new GLSurfaceView(getApplication()) {
+        	public boolean onTouchEvent(MotionEvent event) {
+        		final int x = (int)event.getX();
+        		final int y = getHeight() - (int)event.getY();
+        		
+        		// execute touch events on the rendering thread
+        		queueEvent(new Runnable() {
+                    public void run() {
+                        renderer.handleTouchUp(x, y);
+                    }
+                });
+            	
+            	return false;
+        	}
+        };
         
         // need translucent since textures have alpha channel
         view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -114,20 +128,7 @@ public class BallDemo extends Activity {
 		});
         
         // create renderer that simply passes control into native code
-        view.setRenderer(new GLSurfaceView.Renderer() {
-        	@Override
-        	public void onDrawFrame(GL10 gl) {
-        		drawFrame();
-        	}
-        	
-        	@Override
-        	public void onSurfaceChanged(GL10 gl, int width, int height) {
-        		init(width, height);
-        	}
-        	
-        	@Override
-        	public void onSurfaceCreated(GL10 gl, EGLConfig config) { }
-        });
+        view.setRenderer(renderer = new Renderer());
         
         setContentView(view);
     }
@@ -144,13 +145,22 @@ public class BallDemo extends Activity {
     	view.onResume();
     }
     
-    @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-    	if (event.getAction() == MotionEvent.ACTION_UP) {
-			touchUp((int)event.getX(), view.getHeight() - (int)event.getY());
-    		return true;
+    static class Renderer implements GLSurfaceView.Renderer {
+    	@Override
+    	public void onDrawFrame(GL10 gl) {
+    		drawFrame();
     	}
     	
-    	return false;
+    	@Override
+    	public void onSurfaceChanged(GL10 gl, int width, int height) {
+    		init(width, height);
+    	}
+    	
+    	@Override
+    	public void onSurfaceCreated(GL10 gl, EGLConfig config) { }
+    	
+    	public void handleTouchUp(int x, int y) {
+    		touchUp(x, y);
+    	}
     }
 }
