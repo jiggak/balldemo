@@ -38,6 +38,12 @@ sprite::sprite(const stage & s, const tex_t * texture, const b2BodyDef * def)
    _verts[6] = hw;  _verts[7] = hh;
 }
 
+sprite::~sprite()
+{
+   glDeleteTextures(1, &_texture);
+   _stage.world()->DestroyBody(_body);
+}
+
 bool sprite::setupGL()
 {
    s_program = glutilCreateProgram(sprite_glslv, sprite_glslf);
@@ -82,6 +88,8 @@ bool sprite::setupGL()
 
    return true;
 }
+
+b2Body* sprite::body() const { return _body; }
 
 void sprite::render()
 {

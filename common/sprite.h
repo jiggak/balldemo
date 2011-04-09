@@ -43,6 +43,9 @@ public:
    static bool setupGL();
 
    sprite(const stage & s, const tex_t * texture, const b2BodyDef * def);
+   ~sprite();
+
+   b2Body* body() const;
 
    void render();
 

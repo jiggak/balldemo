@@ -14,8 +14,9 @@ private:
    struct node {
       const T * value;
       node * next;
+      node * previous;
 
-      node(const T * val) : value(val), next(0) { }
+      node(const T * val) : value(val), next(0), previous(0) { }
    } * _first;
 
    struct node * _last;
@@ -38,10 +39,43 @@ public:
          _last = _first = new node(value);
       } else {
          _last->next = new node(value);
+         _last->next->previous = _last;
          _last = _last->next;
       }
 
       _count ++;
+   }
+
+   bool remove(const T * value) {
+      node * cursor = _first;
+
+      while (cursor) {
+         if (cursor->value == value) {
+            if (cursor->next) {
+               cursor->next->previous = cursor->previous;
+            }
+
+            if (cursor->previous) {
+               cursor->previous->next = cursor->next;
+            }
+
+            if (cursor == _first) {
+               _first = cursor->next;
+            }
+
+            if (cursor == _last) {
+               _last = cursor->previous;
+            }
+
+            delete cursor;
+
+            return true;
+         }
+
+         cursor = cursor->next;
+      }
+
+      return false;
    }
 
    int count() const {

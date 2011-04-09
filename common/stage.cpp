@@ -110,6 +110,13 @@ void stage::render()
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
-      ((sprite*)c.next())->render();
+      sprite * s = (sprite*)c.next();
+      if (s->body()->IsAwake()) {
+         s->render();
+      } else {
+         if (_sprites.remove(s)) {
+            delete s;
+         }
+      }
    }
 }
