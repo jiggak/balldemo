@@ -9,5 +9,5 @@ varying vec2 v_texcoord;
 
 void main() {
   gl_Position = vec4(a_position, 0.0, 1.0) * u_rotation * u_translation * u_projection;
-  v_texcoord = vec4(a_position / u_size, 0.0, 1.0) + vec2(0.5, 0.5);
+  v_texcoord = (a_position / u_size) + vec2(0.5, 0.5);
 }
