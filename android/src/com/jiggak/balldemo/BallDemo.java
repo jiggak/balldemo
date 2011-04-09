@@ -10,18 +10,23 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class BallDemo extends Activity {
+	private static final String LOGTAG = "balldemo";
+	
 	static {
     	System.loadLibrary("balldemo");
     }
     
     public static native void drawFrame();
     public static native void init(int width, int height);
+    public static native void touchUp(int x, int y);
     
     private GLSurfaceView view;
+    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,5 +142,15 @@ public class BallDemo extends Activity {
     protected void onResume() {
     	super.onResume();
     	view.onResume();
+    }
+    
+    @Override
+    public boolean onTouchEvent(final MotionEvent event) {
+    	if (event.getAction() == MotionEvent.ACTION_UP) {
+			touchUp((int)event.getX(), view.getHeight() - (int)event.getY());
+    		return true;
+    	}
+    	
+    	return false;
     }
 }
