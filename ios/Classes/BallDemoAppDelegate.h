@@ -11,8 +11,8 @@
 @class BallDemoViewController;
 
 @interface BallDemoAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    BallDemoViewController *viewController;
+   UIWindow *window;
+   BallDemoViewController *viewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

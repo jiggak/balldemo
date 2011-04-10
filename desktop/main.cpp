@@ -31,7 +31,7 @@ void update(int i)
 void mouse(int button, int state, int x, int y)
 {
    if (state == 1) {
-      g_stage->addSprite(sprite::ballSprite(*g_stage, x, HEIGHT-y));
+      g_stage->touchUp(x, y);
    }
 }
 
@@ -52,13 +52,12 @@ int main(int argc, char *argv[])
       return 1;
    }
 
-   if (!stage::setupGL(WIDTH, HEIGHT)) {
+   if (!stage::setupGL()) {
       logError("sprite::setupGL failed");
       return 1;
    }
    
-   g_stage = new stage(WIDTH, HEIGHT);
-   g_stage->addSprite(sprite::ballSprite(*g_stage, 400, 240));
+   g_stage = new stage(WIDTH, HEIGHT, true);
 
    logInfo("entering main loop");
    glutMainLoop();

@@ -12,10 +12,26 @@
 // we need a ratio to convert back and forth to screen units
 #define UNIT_RATIO 40.0f
 
-stage::stage(const GLuint w, const GLuint h)
-   : _width(w), _height(h)
+stage::stage(const GLuint w, const GLuint h, bool rotate)
+   : _width(w), _height(h), _rotated(false)
 {
-   _projection = matrix4::ortho2d(0, w, 0, h);
+   _projection = matrix4::ortho2d(0, _width, 0, _height);
+
+   if (rotate) {
+      _rotated = true;
+
+      GLfloat hw = _width/2.0f;
+      GLfloat hh = _height/2.0f;
+
+      _projection.translate(hw, hh, 0.0f);
+      _projection.rotate(PI/2.0f, 0.0f, 0.0f, 1.0f);
+
+      GLuint t = _width;
+      _width = _height;
+      _height = t;
+
+      _projection.translate(-hh, -hw, 0.0f);
+   }
 
    // real life acceleration of gravity
    b2Vec2 gravity(0, -9.81f);
@@ -32,9 +48,9 @@ stage::stage(const GLuint w, const GLuint h)
    boxShapeDef.shape = &groundBox;
 
    b2Vec2 bottomLeft(0, 0);
-   b2Vec2 bottomRight(stage::s2w(w), 0);
-   b2Vec2 topLeft(0, stage::s2w(h));
-   b2Vec2 topRight(stage::s2w(w), stage::s2w(h));
+   b2Vec2 bottomRight(stage::s2w(_width), 0);
+   b2Vec2 topLeft(0, stage::s2w(_height));
+   b2Vec2 topRight(stage::s2w(_width), stage::s2w(_height));
 
    // bottom edge
    groundBox.SetAsEdge(bottomLeft, bottomRight);
@@ -63,15 +79,13 @@ stage::~stage()
    }
 }
 
-bool stage::setupGL(const GLuint w, const GLuint h)
+bool stage::setupGL()
 {
    if (!sprite::setupGL())
       return false;
 
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-   glViewport(0, 0, w, h);
 
    return true;
 }
@@ -119,4 +133,17 @@ void stage::render()
          }
       }
    }
+}
+
+void stage::touchUp(int x, int y)
+{
+   if (_rotated) {
+      int t = x;
+      x = y;
+      y = t;
+   } else {
+      y = _height - y;
+   }
+
+   this->addSprite(sprite::ballSprite(*this, x, y));
 }

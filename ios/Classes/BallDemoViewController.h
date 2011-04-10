@@ -14,12 +14,12 @@ typedef struct stage stage;
 
 @interface BallDemoViewController : UIViewController
 {
-    EAGLContext *context;
-	stage *_stage;
-    
-    BOOL animating;
-    NSInteger animationFrameInterval;
-    CADisplayLink *displayLink;
+   EAGLContext *context;
+   stage *_stage;
+   
+   BOOL animating;
+   NSInteger animationFrameInterval;
+   CADisplayLink *displayLink;
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;

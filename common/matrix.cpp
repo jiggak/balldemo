@@ -3,10 +3,6 @@
 
 #include <cmath>
 
-#define PI 3.1415926535897932384626433832795f
-#define TO_RADIANS(deg) (deg * PI / 180.0f)
-#define TO_DEGREES(rad) (rad * 180f / PI)
-
 matrix4 matrix4::identity()
 {
    const GLfloat m[] = {

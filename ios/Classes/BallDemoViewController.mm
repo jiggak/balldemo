@@ -27,146 +27,136 @@
 
 - (void)awakeFromNib
 {
-    context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    if (!context) {
-		logError("failed to create EAGL context");
-		return;
-    } else if (![EAGLContext setCurrentContext:context]) {
-		logError("failed to set EAGL context as current");
-		return;
-	}
+   context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+   if (!context) {
+      logError("failed to create EAGL context");
+      return;
+   } else if (![EAGLContext setCurrentContext:context]) {
+      logError("failed to set EAGL context as current");
+      return;
+   }
 	
-	EAGLView *eaglView = (EAGLView *)self.view;
+   EAGLView *eaglView = (EAGLView *)self.view;
 	
-	[eaglView setContext:context];
-    [eaglView setFramebuffer];
+   [eaglView setContext:context];
+   [eaglView setFramebuffer];
     
-	GLint width = eaglView.framebufferWidth;
-	GLint height = eaglView.framebufferHeight;
+   GLint width = eaglView.framebufferWidth;
+   GLint height = eaglView.framebufferHeight;
 	
-	logInfo("init(%d, %d)", width, height);
+   logInfo("init(%d, %d)", width, height);
 	
-	if (!stage::setupGL(width, height)) {
-		logError("sprite::setupGL failed");
-		return;
-	}
+   if (!stage::setupGL()) {
+      logError("sprite::setupGL failed");
+      return;
+   }
 	
-	_stage = new stage(width, height);
-	_stage->addSprite(sprite::ballSprite(*_stage, width/2, height/2));
+   _stage = new stage(width, height, true);
     
-    animating = FALSE;
-    animationFrameInterval = 1;
-    self.displayLink = nil;
+   animating = FALSE;
+   animationFrameInterval = 1;
+   self.displayLink = nil;
 }
 
 - (void)dealloc
 {
-    if (_stage) {
-		delete _stage;
-		_stage = NULL;
-	}
+   if (_stage) {
+      delete _stage;
+      _stage = NULL;
+   }
 	
-    // Tear down context.
-    if ([EAGLContext currentContext] == context)
-        [EAGLContext setCurrentContext:nil];
+   if ([EAGLContext currentContext] == context)
+      [EAGLContext setCurrentContext:nil];
     
-    [context release];
+   [context release];
     
-    [super dealloc];
+   [super dealloc];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self startAnimation];
-    
-    [super viewWillAppear:animated];
+   [self startAnimation];
+   [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self stopAnimation];
-    
-    [super viewWillDisappear:animated];
+   [self stopAnimation];
+   [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload
 {
-	[super viewDidUnload];
+   [super viewDidUnload];
 	
-    if (_stage) {
-		delete _stage;
-		_stage = NULL;
-	}
+   if (_stage) {
+      delete _stage;
+      _stage = NULL;
+   }
 
-    // Tear down context.
-    if ([EAGLContext currentContext] == context)
-        [EAGLContext setCurrentContext:nil];
-	
-	self.context = nil;	
+   if ([EAGLContext currentContext] == context)
+      [EAGLContext setCurrentContext:nil];
+
+   self.context = nil;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   UITouch *touch = [[event allTouches] anyObject];
+   CGPoint point = [touch locationInView:self.view];
+   _stage->touchUp(point.x, point.y);
 }
 
 - (NSInteger)animationFrameInterval
 {
-    return animationFrameInterval;
+   return animationFrameInterval;
 }
 
 - (void)setAnimationFrameInterval:(NSInteger)frameInterval
 {
-    /*
-	 Frame interval defines how many display frames must pass between each time the display link fires.
-	 The display link will only fire 30 times a second when the frame internal is two on a display that refreshes 60 times a second. The default frame interval setting of one will fire 60 times a second when the display refreshes at 60 times a second. A frame interval setting of less than one results in undefined behavior.
-	 */
-    if (frameInterval >= 1)
-    {
-        animationFrameInterval = frameInterval;
-        
-        if (animating)
-        {
-            [self stopAnimation];
-            [self startAnimation];
-        }
-    }
+   /*
+    Frame interval defines how many display frames must pass between each time the display link fires.
+    The display link will only fire 30 times a second when the frame internal is two on a display that refreshes 60 times a second. The default frame interval setting of one will fire 60 times a second when the display refreshes at 60 times a second. A frame interval setting of less than one results in undefined behavior.
+    */
+   if (frameInterval >= 1) {
+      animationFrameInterval = frameInterval;
+      
+      if (animating) {
+         [self stopAnimation];
+         [self startAnimation];
+      }
+   }
 }
 
 - (void)startAnimation
 {
-    if (!animating)
-    {
-        CADisplayLink *aDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(drawFrame)];
-        [aDisplayLink setFrameInterval:animationFrameInterval];
-        [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        self.displayLink = aDisplayLink;
-        
-        animating = TRUE;
-    }
+   if (!animating) {
+      CADisplayLink *aDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(drawFrame)];
+      [aDisplayLink setFrameInterval:animationFrameInterval];
+      [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+      self.displayLink = aDisplayLink;
+      
+      animating = TRUE;
+   }
 }
 
 - (void)stopAnimation
 {
-    if (animating)
-    {
-        [self.displayLink invalidate];
-        self.displayLink = nil;
-        animating = FALSE;
-    }
+   if (animating) {
+      [self.displayLink invalidate];
+      self.displayLink = nil;
+      animating = FALSE;
+   }
 }
 
 - (void)drawFrame
 {
-    [(EAGLView *)self.view setFramebuffer];
-	
-	_stage->advance();
-	_stage->render();
-    
-    [(EAGLView *)self.view presentFramebuffer];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
+   [(EAGLView *)self.view setFramebuffer];
+   
+   _stage->advance();
+   _stage->render();
+   
+   [(EAGLView *)self.view presentFramebuffer];
 }
 
 @end

@@ -6,7 +6,7 @@
  */
 #include "glutils.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "logging.h"
 #include "tex.h"
 

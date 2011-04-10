@@ -10,13 +10,12 @@ void init(GLuint width, GLuint height) {
 
    logInfo("init(%d, %d)", width, height);
 
-   if (!stage::setupGL(width, height)) {
+   if (!stage::setupGL()) {
       logError("sprite::setupGL failed");
       return;
    }
 
    g_stage = new stage(width, height);
-   g_stage->addSprite(sprite::ballSprite(*g_stage, 400, 400));
 }
 
 void drawFrame() {
@@ -25,7 +24,7 @@ void drawFrame() {
 }
 
 void touchUp(int x, int y) {
-   g_stage->addSprite(sprite::ballSprite(*g_stage, x, y));
+   g_stage->touchUp(x, y);
 }
 
 extern "C" {

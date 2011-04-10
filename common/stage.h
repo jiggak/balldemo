@@ -18,15 +18,17 @@ class b2World;
 class stage {
 private:
    GLuint _width, _height;
+   bool _rotated;
+
    matrix4 _projection;
    b2World* _world;
    list<sprite> _sprites;
 
 public:
-   stage(const GLuint w, const GLuint h);
+   stage(const GLuint w, const GLuint h, bool rotate=false);
    ~stage();
 
-   static bool setupGL(const GLuint w, const GLuint h);
+   static bool setupGL();
 
    static float s2w(unsigned int i);
    static unsigned int w2s(float f);
@@ -42,6 +44,8 @@ public:
 
    void advance();
    void render();
+
+   void touchUp(int x, int y);
 };
 
 #endif /* STAGE_H_ */

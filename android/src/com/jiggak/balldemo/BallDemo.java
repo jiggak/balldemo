@@ -40,7 +40,7 @@ public class BallDemo extends Activity {
         view = new GLSurfaceView(getApplication()) {
         	public boolean onTouchEvent(MotionEvent event) {
         		final int x = (int)event.getX();
-        		final int y = getHeight() - (int)event.getY();
+        		final int y = (int)event.getY();
         		
         		// execute touch events on the rendering thread
         		queueEvent(new Runnable() {
