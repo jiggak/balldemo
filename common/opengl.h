@@ -9,7 +9,7 @@
 
 #include <GLES2/gl2.h>
 
-#elif IOS
+#elif __IPHONE_NA
 
 #include <OpenGLES/ES2/gl.h>
 
