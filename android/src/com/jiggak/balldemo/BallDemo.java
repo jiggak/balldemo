@@ -57,7 +57,6 @@ public class BallDemo extends Activity {
         view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         
         view.setEGLContextFactory(new GLSurfaceView.EGLContextFactory() {
-        	@Override
         	public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
         		final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         		
@@ -70,14 +69,12 @@ public class BallDemo extends Activity {
         		return context;
         	}
         	
-        	@Override
         	public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
         		egl.eglDestroyContext(display, context);
         	}
         });
         
         view.setEGLConfigChooser(new GLSurfaceView.EGLConfigChooser() {
-			@Override
 			public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
         		final int EGL_OPENGL_ES2_BIT = 4;
         		
@@ -146,17 +143,14 @@ public class BallDemo extends Activity {
     }
     
     static class Renderer implements GLSurfaceView.Renderer {
-    	@Override
     	public void onDrawFrame(GL10 gl) {
     		drawFrame();
     	}
     	
-    	@Override
     	public void onSurfaceChanged(GL10 gl, int width, int height) {
     		init(width, height);
     	}
     	
-    	@Override
     	public void onSurfaceCreated(GL10 gl, EGLConfig config) { }
     	
     	public void handleTouchUp(int x, int y) {
