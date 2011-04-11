@@ -89,6 +89,14 @@ bool sprite::setupGL()
    return true;
 }
 
+void sprite::teardownGL()
+{
+   if (s_a_position) {
+      glDeleteProgram(s_a_position);
+      s_a_position = 0;
+   }
+}
+
 b2Body* sprite::body() const { return _body; }
 
 void sprite::render()

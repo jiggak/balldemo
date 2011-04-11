@@ -41,6 +41,7 @@ private:
 
 public:
    static bool setupGL();
+   static void teardownGL();
 
    sprite(const stage & s, const tex_t * texture, const b2BodyDef * def);
    ~sprite();

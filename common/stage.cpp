@@ -71,12 +71,14 @@ stage::stage(const GLuint w, const GLuint h, bool rotate)
 
 stage::~stage()
 {
-   delete _world;
+   sprite::teardownGL();
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
       delete c.next();
    }
+
+   delete _world;
 }
 
 bool stage::setupGL()
