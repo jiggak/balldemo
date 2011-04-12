@@ -89,7 +89,7 @@ public:
    public:
       cursor(struct node * n) : _node(n) { }
 
-      bool more() {
+      inline bool more() {
          return _node != 0;
       }
 

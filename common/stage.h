@@ -33,12 +33,12 @@ public:
    static float s2w(unsigned int i);
    static unsigned int w2s(float f);
 
-   const GLuint width() const;
-   const GLuint height() const;
+   inline const GLuint width() const { return _width; }
+   inline const GLuint height() const { return _height; }
 
-   const matrix4 & projection() const;
+   inline const matrix4 & projection() const { return _projection; }
 
-   b2World* world() const;
+   inline b2World* world() const { return _world; }
 
    void addSprite(const sprite * s);
 

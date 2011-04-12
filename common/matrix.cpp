@@ -110,8 +110,6 @@ void matrix4::init(const GLfloat m[16])
    }
 }
 
-const GLfloat* matrix4::m() const { return _m; }
-
 void matrix4::scale(const GLfloat sx, const GLfloat sy, const GLfloat sz)
 {
    _m[0]  *= sx;

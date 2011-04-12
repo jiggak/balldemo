@@ -89,8 +89,6 @@ void sprite::teardownGL()
    glDeleteProgram(s_program);
 }
 
-b2Body* sprite::body() const { return _body; }
-
 void sprite::render()
 {
    GLfloat tx = stage::w2s(_body->GetPosition().x);

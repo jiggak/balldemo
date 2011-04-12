@@ -44,7 +44,7 @@ public:
    sprite(const stage & s, GLuint w, GLuint h);
    virtual ~sprite();
 
-   b2Body* body() const;
+   inline b2Body* body() const { return _body; }
 
    void render();
 };
@@ -54,7 +54,7 @@ private:
    static GLuint s_texture;
 
 protected:
-   GLuint texture() const { return s_texture; }
+   inline GLuint texture() const { return s_texture; }
 
 public:
    ball(const stage & s, GLuint x, GLuint y, GLuint w);

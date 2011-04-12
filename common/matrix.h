@@ -37,7 +37,7 @@ public:
    matrix4(const GLfloat m[16]);
    matrix4(const matrix4 & other);
 
-   const GLfloat* m() const;
+   inline const GLfloat* m() const { return _m; }
 
    void scale(const GLfloat sx, const GLfloat sy, const GLfloat sz);
    void translate(const GLfloat tx, const GLfloat ty, const GLfloat tz);

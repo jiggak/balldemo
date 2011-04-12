@@ -107,13 +107,6 @@ unsigned int stage::w2s(float f)
    return f * UNIT_RATIO;
 }
 
-const GLuint stage::width() const { return _width; }
-const GLuint stage::height() const { return _height; }
-
-const matrix4 & stage::projection() const { return _projection; }
-
-b2World* stage::world() const { return _world; }
-
 void stage::addSprite(const sprite * s)
 {
    _sprites.add(s);
