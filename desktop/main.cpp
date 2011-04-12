@@ -1,5 +1,8 @@
-#include <stdio.h>
-#include <stdarg.h>
+#include <fstream>
+#include <string>
+#include <cstdio>
+
+using namespace std;
 
 #include <GL/glew.h>
 
@@ -20,26 +23,40 @@
 
 stage *g_stage = NULL;
 
-void logError(const char *fmt, ...) {
-   va_list argp;
-   va_start(argp, fmt);
-   printf("ERROR: ");
-   vprintf(fmt, argp);
-   printf("\n");
-   va_end(argp);
-}
+void logv(log_level_t level, const char *fmt, va_list args) {
+   switch (level) {
+   case LOG_LEVEL_ERROR:
+      printf("ERROR: "); break;
+   default:
+      printf("INFO: ");
+   }
 
-void logInfo(const char *fmt, ...) {
-   va_list argp;
-   va_start(argp, fmt);
-   printf("INFO: ");
-   vprintf(fmt, argp);
+   vprintf(fmt, args);
    printf("\n");
-   va_end(argp);
 }
 
 asset_t * loadAsset(const char * path) {
+   logInfo("loadAsset(%s)", path);
 
+   string file("../assets/");
+   file.append(path);
+
+   ifstream f(file.c_str(), ios::in|ios::binary);
+   if (!f.is_open()) {
+      logError("file not found: %s", file.c_str());
+      return NULL;
+   }
+
+   asset_t * asset = new asset_t;
+
+   asset->size = f.rdbuf()->in_avail();
+   asset->data = new uint8_t[asset->size];
+
+   if (f.read((char*)asset->data, asset->size).eof()) {
+      logError("eof reached before end of asset");
+   }
+
+   return asset;
 }
 
 void freeAsset(asset_t * asset) {
@@ -73,11 +90,11 @@ int main(int argc, char *argv[])
    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
    glutInitWindowSize(WIDTH, HEIGHT);
 
-   glutCreateWindow("BallDemo");
+   glutCreateWindow("Ball Demo");
    glutDisplayFunc(&render);
    glutTimerFunc(0, &update, 0);
    glutMouseFunc(&mouse);
-   
+
    glewInit();
    if (!GLEW_VERSION_2_0) {
       logError("OpenGL 2.0 not available");
@@ -88,12 +105,12 @@ int main(int argc, char *argv[])
       logError("sprite::setupGL failed");
       return 1;
    }
-   
-   g_stage = new stage(WIDTH, HEIGHT, true);
+
+   g_stage = new stage(WIDTH, HEIGHT);
 
    logInfo("entering main loop");
    glutMainLoop();
-   
+
    delete g_stage;
 
    return 0;

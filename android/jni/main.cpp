@@ -14,18 +14,16 @@ jobject g_activity;
 
 stage *g_stage = NULL;
 
-void logError(const char *fmt, ...) {
-   va_list argp;
-   va_start(argp, fmt);
-   __android_log_vprint(ANDROID_LOG_ERROR, LOG_TAG, fmt, argp);
-   va_end(argp);
-}
+void logv(log_level_t level, const char *fmt, va_list args) {
+   android_LogPriority l;
+   switch (level) {
+   case LOG_LEVEL_ERROR:
+      l = ANDROID_LOG_ERROR; break;
+   default:
+      l = ANDROID_LOG_INFO;
+   }
 
-void logInfo(const char *fmt, ...) {
-   va_list argp;
-   va_start(argp, fmt);
-   __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, fmt, argp);
-   va_end(argp);
+   __android_log_vprint(l, LOG_TAG, fmt, args);
 }
 
 asset_t * loadAsset(const char * path) {
