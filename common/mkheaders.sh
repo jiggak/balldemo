@@ -19,11 +19,3 @@ for f in ${SRC}; do
   ./bin2c <${f} >>${HEADER}
   echo -e '\t"\\x00";' >>${HEADER}
 done
-
-SRC="../assets/ball.tga"
-HEADER="assets.h"
-
-rm -f ${HEADER}
-for f in ${SRC}; do
-  ./bin2c $(path2cname $f) <${f} >>${HEADER}
-done

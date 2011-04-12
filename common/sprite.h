@@ -10,11 +10,7 @@
 #include "opengl.h"
 
 class stage;
-
 class b2Body;
-struct b2BodyDef;
-
-struct tex_t;
 
 class sprite {
 private:
@@ -31,26 +27,40 @@ private:
    static GLint s_u_rotation;
    static GLint s_u_size;
 
+   GLfloat _verts[8];
+
+protected:
    const stage & _stage;
    b2Body * _body;
 
    GLuint _width, _height;
 
-   GLfloat _verts[8];
-   GLuint _texture;
+   virtual GLuint texture() const { return 0; };
 
 public:
    static bool setupGL();
    static void teardownGL();
 
-   sprite(const stage & s, const tex_t * texture, const b2BodyDef * def);
-   ~sprite();
+   sprite(const stage & s, GLuint w, GLuint h);
+   virtual ~sprite();
 
    b2Body* body() const;
 
    void render();
+};
 
-   static sprite * ballSprite(const stage & s, GLuint x, GLuint y);
+class ball : public sprite {
+private:
+   static GLuint s_texture;
+
+protected:
+   GLuint texture() const { return s_texture; }
+
+public:
+   ball(const stage & s, GLuint x, GLuint y, GLuint w);
+
+   static bool load();
+   static void unload();
 };
 
 #endif

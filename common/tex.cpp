@@ -8,7 +8,7 @@
 #include "logging.h"
 #include <string.h>
 
-tex_t* texLoadTGA(const char * data, const int size)
+tex_t* texLoadTGA(const uint8_t * data, const int size)
 {
    int cursor = 0;
 

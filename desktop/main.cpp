@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdarg.h>
+
 #include <GL/glew.h>
 
 #ifdef __APPLE__
@@ -7,6 +10,8 @@
 #endif
 
 #include "logging.h"
+#include "assets.h"
+
 #include "stage.h"
 #include "sprite.h"
 
@@ -14,6 +19,33 @@
 #define HEIGHT 480
 
 stage *g_stage = NULL;
+
+void logError(const char *fmt, ...) {
+   va_list argp;
+   va_start(argp, fmt);
+   printf("ERROR: ");
+   vprintf(fmt, argp);
+   printf("\n");
+   va_end(argp);
+}
+
+void logInfo(const char *fmt, ...) {
+   va_list argp;
+   va_start(argp, fmt);
+   printf("INFO: ");
+   vprintf(fmt, argp);
+   printf("\n");
+   va_end(argp);
+}
+
+asset_t * loadAsset(const char * path) {
+
+}
+
+void freeAsset(asset_t * asset) {
+   delete asset->data;
+   delete asset;
+}
 
 void render()
 {

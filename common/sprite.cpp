@@ -19,13 +19,9 @@ GLint sprite::s_u_translation = -1;
 GLint sprite::s_u_rotation = -1;
 GLint sprite::s_u_size = -1;
 
-sprite::sprite(const stage & s, const tex_t * texture, const b2BodyDef * def)
-   : _stage(s), _width(texture->width), _height(texture->height)
+sprite::sprite(const stage & s, GLuint w, GLuint h)
+   : _stage(s), _width(w), _height(h)
 {
-   _texture = glutilLoadTexture(texture);
-
-   _body = _stage.world()->CreateBody(def);
-
    GLfloat hw = _width/2.0f;  // half width
    GLfloat hh = _height/2.0f; // half height
 
@@ -40,7 +36,6 @@ sprite::sprite(const stage & s, const tex_t * texture, const b2BodyDef * def)
 
 sprite::~sprite()
 {
-   glDeleteTextures(1, &_texture);
    _stage.world()->DestroyBody(_body);
 }
 
@@ -91,10 +86,7 @@ bool sprite::setupGL()
 
 void sprite::teardownGL()
 {
-   if (s_a_position) {
-      glDeleteProgram(s_a_position);
-      s_a_position = 0;
-   }
+   glDeleteProgram(s_program);
 }
 
 b2Body* sprite::body() const { return _body; }
@@ -117,7 +109,7 @@ void sprite::render()
    glEnableVertexAttribArray(s_a_position);
 
    glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, _texture);
+   glBindTexture(GL_TEXTURE_2D, this->texture());
    glUniform1i(s_u_texture, 0);
 
    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -125,30 +117,48 @@ void sprite::render()
    glDisableVertexAttribArray(s_a_position);
 }
 
-sprite * sprite::ballSprite(const stage & s, GLuint x, GLuint y)
-{
-   tex_t *texture = texLoadTGA(ball_tga, ball_tga_size);
-   if (!texture) {
-      return NULL;
-   }
+GLuint ball::s_texture = 0;
 
+ball::ball(const stage & s, GLuint x, GLuint y, GLuint w) : sprite(s, w, w)
+{
    b2BodyDef ballBodyDef;
    ballBodyDef.type = b2_dynamicBody;
    ballBodyDef.position.Set(stage::s2w(x), stage::s2w(y));
 
-   sprite *result = new sprite(s, texture, &ballBodyDef);
-
-   texFree(texture);
+   _body = _stage.world()->CreateBody(&ballBodyDef);
 
    b2CircleShape circle;
-   circle.m_radius = stage::s2w(result->_width / 2);
+   circle.m_radius = stage::s2w(w / 2);
 
    b2FixtureDef ballShapeDef;
    ballShapeDef.shape = &circle;
    ballShapeDef.density = 1.0f;
    ballShapeDef.friction = 0.2f;
    ballShapeDef.restitution = 0.8f;
-   result->_body->CreateFixture(&ballShapeDef);
 
-   return result;
+   _body->CreateFixture(&ballShapeDef);
+}
+
+bool ball::load()
+{
+   asset_t * asset = loadAsset("ball.tga");
+   if (!asset) {
+      return false;
+   }
+
+   tex_t *texture = texLoadTGA(asset->data, asset->size);
+   freeAsset(asset);
+
+   if (!texture) {
+      return false;
+   }
+
+   s_texture = glutilLoadTexture(texture);
+
+   return true;
+}
+
+void ball::unload()
+{
+   glDeleteTextures(1, &s_texture);
 }

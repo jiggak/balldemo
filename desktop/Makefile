@@ -48,10 +48,10 @@ SRC+=../common/Box2D/Collision/b2BroadPhase.cpp \
    ../common/Box2D/Dynamics/Joints/b2RevoluteJoint.cpp \
    ../common/Box2D/Dynamics/Joints/b2WeldJoint.cpp
 
-SRC+=logging.cpp \
-   ../common/tex.cpp \
+SRC+= \
    ../common/glutils.cpp \
    ../common/matrix.cpp \
+   ../common/tex.cpp \
    ../common/sprite.cpp \
    ../common/stage.cpp \
    main.cpp

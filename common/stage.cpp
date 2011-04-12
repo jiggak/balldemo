@@ -72,6 +72,7 @@ stage::stage(const GLuint w, const GLuint h, bool rotate)
 stage::~stage()
 {
    sprite::teardownGL();
+   ball::unload();
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
@@ -86,6 +87,10 @@ bool stage::setupGL()
    if (!sprite::setupGL())
       return false;
 
+   if (!ball::load()) {
+      return false;
+   }
+
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -94,7 +99,7 @@ bool stage::setupGL()
 
 float stage::s2w(unsigned int i)
 {
-   return i/UNIT_RATIO;
+   return i / UNIT_RATIO;
 }
 
 unsigned int stage::w2s(float f)
@@ -147,5 +152,5 @@ void stage::touchUp(int x, int y)
       y = _height - y;
    }
 
-   this->addSprite(sprite::ballSprite(*this, x, y));
+   this->addSprite(new ball(*this, x, y, 40));
 }
