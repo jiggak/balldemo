@@ -43,6 +43,7 @@ LOCAL_SRC_FILES += ../../common/Box2D/Collision/b2BroadPhase.cpp \
    ../../common/Box2D/Dynamics/Joints/b2WeldJoint.cpp
 
 LOCAL_SRC_FILES += \
+   ../../common/logging.cpp \
    ../../common/glutils.cpp \
    ../../common/matrix.cpp \
    ../../common/tex.cpp \

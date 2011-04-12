@@ -49,6 +49,7 @@ SRC+=../common/Box2D/Collision/b2BroadPhase.cpp \
    ../common/Box2D/Dynamics/Joints/b2WeldJoint.cpp
 
 SRC+= \
+   ../common/logging.cpp \
    ../common/glutils.cpp \
    ../common/matrix.cpp \
    ../common/tex.cpp \
