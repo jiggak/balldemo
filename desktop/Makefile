@@ -53,6 +53,7 @@ SRC+= \
    ../common/glutils.cpp \
    ../common/matrix.cpp \
    ../common/tex.cpp \
+   ../common/gltext.cpp \
    ../common/sprite.cpp \
    ../common/stage.cpp \
    main.cpp

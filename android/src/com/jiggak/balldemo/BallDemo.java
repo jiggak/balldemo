@@ -36,15 +36,15 @@ public class BallDemo extends Activity {
 
    private GLSurfaceView view;
    
-   static void logInfo(String fmt, Object... args) {
+   public static void logInfo(String fmt, Object... args) {
       Log.i(LOGTAG, String.format(fmt, args));
    }
    
-   static void logError(Exception e, String fmt, Object... args) {
+   public static void logError(Exception e, String fmt, Object... args) {
       Log.e(LOGTAG, String.format(fmt, args), e);
    }
    
-   static void logError(String fmt, Object... args) {
+   public static void logError(String fmt, Object... args) {
       Log.e(LOGTAG, String.format(fmt, args));
    }
 

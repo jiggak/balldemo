@@ -101,12 +101,11 @@ int main(int argc, char *argv[])
       return 1;
    }
 
-   if (!stage::setupGL()) {
-      logError("sprite::setupGL failed");
+   g_stage = new stage(WIDTH, HEIGHT);
+   if (!g_stage->setupGL()) {
+      logError("stage::setupGL failed");
       return 1;
    }
-
-   g_stage = new stage(WIDTH, HEIGHT);
 
    logInfo("entering main loop");
    glutMainLoop();

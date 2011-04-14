@@ -9,7 +9,7 @@ if [ ! -x bin2c ]; then
   gcc -o bin2c bin2c.c
 fi
 
-SRC="sprite.glslv sprite.glslf"
+SRC="sprite.glslv sprite.glslf text.glslv text.glslf"
 HEADER="shaders.h"
 
 rm -f ${HEADER}

@@ -6,15 +6,15 @@
  */
 #include "stage.h"
 #include "sprite.h"
+#include "gltext.h"
 #include "Box2D/Box2D.h"
 
-// box2d uses MKS (meters, kilograms, seconds) units
-// we need a ratio to convert back and forth to screen units
-#define UNIT_RATIO 40.0f
 
 stage::stage(const GLuint w, const GLuint h, bool rotate)
    : _width(w), _height(h), _rotated(false)
 {
+   _text = new gltext(*this);
+
    _projection = matrix4::ortho2d(0, _width, 0, _height);
 
    if (rotate) {
@@ -71,40 +71,38 @@ stage::stage(const GLuint w, const GLuint h, bool rotate)
 
 stage::~stage()
 {
-   sprite::teardownGL();
-   ball::unload();
+   sprite::unloadGL();
+   ball::unloadGL();
+   gltext::unloadGL();
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
       delete c.next();
    }
 
+   delete _text;
    delete _world;
 }
 
 bool stage::setupGL()
 {
-   if (!sprite::setupGL())
+   if (!sprite::loadGL())
       return false;
 
-   if (!ball::load()) {
+   if (!ball::loadGL()) {
       return false;
    }
+
+   if (!gltext::loadGL()) {
+      return false;
+   }
+
+   _text->loadTexture("font.tga");
 
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
    return true;
-}
-
-float stage::s2w(unsigned int i)
-{
-   return i / UNIT_RATIO;
-}
-
-unsigned int stage::w2s(float f)
-{
-   return f * UNIT_RATIO;
 }
 
 void stage::addSprite(const sprite * s)
@@ -119,7 +117,7 @@ void stage::advance()
 
 void stage::render()
 {
-   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
    list<sprite>::cursor c = _sprites.iterate();

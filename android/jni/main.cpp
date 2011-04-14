@@ -59,8 +59,8 @@ void create(GLuint width, GLuint height) {
 }
 
 void load() {
-   if (!stage::setupGL()) {
-      logError("sprite::setupGL failed");
+   if (!g_stage->setupGL()) {
+      logError("stage::setupGL failed");
    }
 }
 

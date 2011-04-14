@@ -38,8 +38,8 @@ protected:
    virtual GLuint texture() const { return 0; };
 
 public:
-   static bool setupGL();
-   static void teardownGL();
+   static bool loadGL();
+   static void unloadGL();
 
    sprite(const stage & s, GLuint w, GLuint h);
    virtual ~sprite();
@@ -57,10 +57,10 @@ protected:
    inline GLuint texture() const { return s_texture; }
 
 public:
-   ball(const stage & s, GLuint x, GLuint y, GLuint w);
+   static bool loadGL();
+   static void unloadGL();
 
-   static bool load();
-   static void unload();
+   ball(const stage & s, GLuint x, GLuint y, GLuint w);
 };
 
 #endif

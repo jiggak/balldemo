@@ -8,7 +8,6 @@
 #include "logging.h"
 #include "shaders.h"
 #include "tex.h"
-
 #include "assets.h"
 
 GLuint sprite::s_program = 0;
@@ -39,7 +38,7 @@ sprite::~sprite()
    _stage.world()->DestroyBody(_body);
 }
 
-bool sprite::setupGL()
+bool sprite::loadGL()
 {
    s_program = glutilCreateProgram(sprite_glslv, sprite_glslf);
    if (!s_program)
@@ -84,7 +83,7 @@ bool sprite::setupGL()
    return true;
 }
 
-void sprite::teardownGL()
+void sprite::unloadGL()
 {
    glDeleteProgram(s_program);
 }
@@ -137,7 +136,7 @@ ball::ball(const stage & s, GLuint x, GLuint y, GLuint w) : sprite(s, w, w)
    _body->CreateFixture(&ballShapeDef);
 }
 
-bool ball::load()
+bool ball::loadGL()
 {
    asset_t * asset = loadAsset("ball.tga");
    if (!asset) {
@@ -156,7 +155,7 @@ bool ball::load()
    return true;
 }
 
-void ball::unload()
+void ball::unloadGL()
 {
    glDeleteTextures(1, &s_texture);
 }

@@ -49,6 +49,7 @@ LOCAL_SRC_FILES += \
    ../../common/tex.cpp \
    ../../common/sprite.cpp \
    ../../common/stage.cpp \
+   ../../common/gltext.cpp \
    main.cpp
 
 LOCAL_LDLIBS := -llog -lGLESv2

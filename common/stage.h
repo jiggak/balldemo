@@ -12,6 +12,11 @@
 #include "matrix.h"
 #include "list.h"
 
+// box2d uses MKS (meters, kilograms, seconds) units
+// we need a ratio to convert back and forth to screen units
+#define UNIT_RATIO 40.0f
+
+class gltext;
 class sprite;
 class b2World;
 
@@ -21,17 +26,19 @@ private:
    bool _rotated;
 
    matrix4 _projection;
-   b2World* _world;
+   b2World * _world;
    list<sprite> _sprites;
+
+   gltext * _text;
 
 public:
    stage(const GLuint w, const GLuint h, bool rotate=false);
    ~stage();
 
-   static bool setupGL();
+   bool setupGL();
 
-   static float s2w(unsigned int i);
-   static unsigned int w2s(float f);
+   inline static float s2w(unsigned int i) { return i / UNIT_RATIO; }
+   inline static unsigned int w2s(float f) { return f * UNIT_RATIO; }
 
    inline const GLuint width() const { return _width; }
    inline const GLuint height() const { return _height; }
