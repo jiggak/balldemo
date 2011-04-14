@@ -6,9 +6,7 @@
 #include "matrix.h"
 #include "glutils.h"
 #include "logging.h"
-#include "shaders.h"
 #include "tex.h"
-#include "assets.h"
 
 GLuint sprite::s_program = 0;
 GLint sprite::s_a_position = -1;
@@ -40,7 +38,7 @@ sprite::~sprite()
 
 bool sprite::loadGL()
 {
-   s_program = glutilCreateProgram(sprite_glslv, sprite_glslf);
+   s_program = glutilCreateProgram("shaders/sprite.glslv", "shaders/sprite.glslf");
    if (!s_program)
       return false;
 
@@ -138,19 +136,13 @@ ball::ball(const stage & s, GLuint x, GLuint y, GLuint w) : sprite(s, w, w)
 
 bool ball::loadGL()
 {
-   asset_t * asset = loadAsset("ball.tga");
-   if (!asset) {
-      return false;
-   }
-
-   tex_t *texture = texLoadTGA(asset->data, asset->size);
-   freeAsset(asset);
-
+   tex_t *texture = texLoadTGA("textures/ball.tga");
    if (!texture) {
       return false;
    }
 
    s_texture = glutilLoadTexture(texture);
+   texFree(texture);
 
    return true;
 }

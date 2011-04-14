@@ -10,7 +10,6 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "shaders.h"
 #include "logging.h"
 #include "glutils.h"
 #include "stage.h"
@@ -31,7 +30,7 @@ GLint gltext::s_u_char_offset = -1;
 
 bool gltext::loadGL()
 {
-   s_program = glutilCreateProgram(text_glslv, text_glslf);
+   s_program = glutilCreateProgram("shaders/text.glslv", "shaders/text.glslf");
    if (!s_program)
       return false;
 
@@ -92,22 +91,16 @@ gltext::~gltext()
 
 bool gltext::loadTexture(const char * path)
 {
-   asset_t * asset = loadAsset(path);
-   if (!asset) {
-      return false;
-   }
-
-   tex_t *texture = texLoadTGA(asset->data, asset->size);
-   freeAsset(asset);
-
+   tex_t *texture = texLoadTGA(path);
    if (!texture) {
       return false;
    }
 
-   _texture = glutilLoadTexture(texture);
-
    _cwidth = texture->width / (ASCII_MAX-ASCII_MIN-1);
    _cheight = texture->height;
+
+   _texture = glutilLoadTexture(texture);
+   texFree(texture);
 
    GLfloat hw = _cwidth / 2.0f;
    GLfloat hh = _cheight / 2.0f;

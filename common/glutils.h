@@ -10,10 +10,11 @@
 #define GLUTILS_H_
 
 struct tex_t;
+struct asset_t;
 
 void glutilCheckError(const char* op);
-GLuint glutilLoadShader(GLenum shaderType, const char* source);
-GLuint glutilCreateProgram(const char* vshader, const char* fshader);
+GLuint glutilLoadShader(GLenum shaderType, const asset_t * source);
+GLuint glutilCreateProgram(const char* vsPath, const char* fsPath);
 GLuint glutilLoadTexture(const tex_t * texture);
 
 #endif /* GLUTILS_H_ */

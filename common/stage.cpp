@@ -97,7 +97,7 @@ bool stage::setupGL()
       return false;
    }
 
-   _text->loadTexture("font.tga");
+   _text->loadTexture("textures/font.tga");
 
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

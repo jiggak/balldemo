@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include "logging.h"
+#include "assets.h"
 #include "tex.h"
 
 
@@ -17,14 +18,14 @@ void glutilCheckError(const char* op) {
    }
 }
 
-GLuint glutilLoadShader(GLenum shaderType, const char* source) {
+GLuint glutilLoadShader(GLenum shaderType, const asset_t * source) {
    // create shader object
    GLuint shader = glCreateShader(shaderType);
    if (shader == 0)
       return 0;
 
    // load shader source and compile
-   glShaderSource(shader, 1, &source, NULL);
+   glShaderSource(shader, 1, (const char**)&source->data, &source->size);
    glCompileShader(shader);
 
    // verify shader was compiled successfully
@@ -50,13 +51,27 @@ GLuint glutilLoadShader(GLenum shaderType, const char* source) {
    return shader;
 }
 
-GLuint glutilCreateProgram(const char* vshader, const char* fshader) {
+GLuint glutilCreateProgram(const char* vsPath, const char* fsPath) {
+   asset_t * vshader = loadAsset(vsPath);
+   if (!vshader) {
+      return 0;
+   }
+
    GLuint vertexShader = glutilLoadShader(GL_VERTEX_SHADER, vshader);
+   freeAsset(vshader);
+
    if (!vertexShader) {
       return 0;
    }
 
+   asset_t * fshader = loadAsset(fsPath);
+   if (!fshader) {
+      return 0;
+   }
+
    GLuint fragmentShader = glutilLoadShader(GL_FRAGMENT_SHADER, fshader);
+   freeAsset(fshader);
+
    if (!fragmentShader) {
       return 0;
    }

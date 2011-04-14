@@ -5,14 +5,32 @@
  *      Author: josh
  */
 #include "tex.h"
+#include "assets.h"
 #include "logging.h"
-#include <string.h>
+#include <cstring>
 
-tex_t* texLoadTGA(const uint8_t * data, const int size)
+tex_t* texLoadTGA(const char * path)
+{
+   asset_t * asset = loadAsset(path);
+   if (!asset) {
+      return NULL;
+   }
+
+   tex_t *texture = texLoadTGA(asset);
+   freeAsset(asset);
+
+   if (!texture) {
+      return NULL;
+   }
+
+   return texture;
+}
+
+tex_t* texLoadTGA(const asset_t * asset)
 {
    int cursor = 0;
 
-   tga_header_t *header = (tga_header_t*)data;
+   tga_header_t *header = (tga_header_t*)asset->data;
    cursor += sizeof(tga_header_t);
 
    cursor += header->id_length;
@@ -28,13 +46,13 @@ tex_t* texLoadTGA(const uint8_t * data, const int size)
    uint bufsz = header->width * header->height * (header->bits_per_pixel/8);
    texture->pixels = new uint8_t[bufsz];
 
-   if (bufsz > (size - cursor)) {
+   if (bufsz > (asset->size - cursor)) {
       logError("tga file has incomplete pixel data");
       texFree(texture);
       return NULL;
    }
 
-   memcpy(texture->pixels, data+cursor, bufsz);
+   memcpy(texture->pixels, asset->data + cursor, bufsz);
 
    // TGA pixel data is BGR packed, convert to RGB
    for (uint i=0; i<bufsz; i+=4) {

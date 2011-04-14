@@ -15,6 +15,8 @@ typedef struct tex_t {
    uint8_t *pixels;
 } tex_t;
 
+struct asset_t;
+
 typedef struct {
    uint8_t id_length;
    uint8_t color_map_type;
@@ -30,8 +32,10 @@ typedef struct {
    uint8_t image_descriptor;
 } __attribute__((__packed__)) tga_header_t;
 
-tex_t* texLoadTGA(const uint8_t * data, const int size);
+tex_t* texLoadTGA(const char * path);
 
-void texFree(tex_t *texture);
+tex_t* texLoadTGA(const asset_t * asset);
+
+void texFree(tex_t * texture);
 
 #endif /* TEX_H_ */
