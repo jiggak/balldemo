@@ -102,13 +102,10 @@ bool gltext::loadTexture(const char * path)
    _texture = glutilLoadTexture(texture);
    texFree(texture);
 
-   GLfloat hw = _cwidth / 2.0f;
-   GLfloat hh = _cheight / 2.0f;
-
-   _verts[0] = -hw; _verts[1] = -hh;
-   _verts[2] = -hw; _verts[3] = hh;
-   _verts[4] = hw;  _verts[5] = -hh;
-   _verts[6] = hw;  _verts[7] = hh;
+   _verts[0] = 0;       _verts[1] = 0;
+   _verts[2] = 0;       _verts[3] = _cheight;
+   _verts[4] = _cwidth; _verts[5] = 0;
+   _verts[6] = _cwidth; _verts[7] = _cheight;
 
    return true;
 }
