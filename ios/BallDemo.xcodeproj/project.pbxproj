@@ -47,7 +47,10 @@
 		037367D11350215A00235B79 /* b2Island.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 037367AA1350215A00235B79 /* b2Island.cpp */; };
 		037367D21350215A00235B79 /* b2World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 037367AD1350215A00235B79 /* b2World.cpp */; };
 		037367D31350215A00235B79 /* b2WorldCallbacks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 037367AF1350215A00235B79 /* b2WorldCallbacks.cpp */; };
-		03A31A781350A7CE0017B3CE /* logging.mm in Sources */ = {isa = PBXBuildFile; fileRef = 03A31A771350A7CE0017B3CE /* logging.mm */; };
+		03EB3B0F135707580060FA56 /* logging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EB3B0E135707580060FA56 /* logging.cpp */; };
+		03EB3B12135707770060FA56 /* gltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EB3B10135707770060FA56 /* gltext.cpp */; };
+		03EB3B17135708130060FA56 /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = 03EB3B16135708130060FA56 /* common.mm */; };
+		03EB3B4E13570B340060FA56 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 03EB3B4213570B340060FA56 /* assets */; };
 		1D3623260D0F684500981E51 /* BallDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BallDemoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -69,7 +72,6 @@
 		0373673D13501FB900235B79 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix.cpp; path = ../common/matrix.cpp; sourceTree = SOURCE_ROOT; };
 		0373673E13501FB900235B79 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = matrix.h; path = ../common/matrix.h; sourceTree = SOURCE_ROOT; };
 		0373673F13501FB900235B79 /* opengl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opengl.h; path = ../common/opengl.h; sourceTree = SOURCE_ROOT; };
-		0373674013501FB900235B79 /* shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shaders.h; path = ../common/shaders.h; sourceTree = SOURCE_ROOT; };
 		0373674113501FB900235B79 /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sprite.cpp; path = ../common/sprite.cpp; sourceTree = SOURCE_ROOT; };
 		0373674213501FB900235B79 /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sprite.h; path = ../common/sprite.h; sourceTree = SOURCE_ROOT; };
 		0373674313501FB900235B79 /* stage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stage.cpp; path = ../common/stage.cpp; sourceTree = SOURCE_ROOT; };
@@ -147,7 +149,11 @@
 		037367AE1350215A00235B79 /* b2World.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2World.h; sourceTree = "<group>"; };
 		037367AF1350215A00235B79 /* b2WorldCallbacks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = b2WorldCallbacks.cpp; sourceTree = "<group>"; };
 		037367B01350215A00235B79 /* b2WorldCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2WorldCallbacks.h; sourceTree = "<group>"; };
-		03A31A771350A7CE0017B3CE /* logging.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = logging.mm; sourceTree = "<group>"; };
+		03EB3B0E135707580060FA56 /* logging.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = logging.cpp; path = ../common/logging.cpp; sourceTree = SOURCE_ROOT; };
+		03EB3B10135707770060FA56 /* gltext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gltext.cpp; path = ../common/gltext.cpp; sourceTree = SOURCE_ROOT; };
+		03EB3B11135707770060FA56 /* gltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gltext.h; path = ../common/gltext.h; sourceTree = SOURCE_ROOT; };
+		03EB3B16135708130060FA56 /* common.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = common.mm; sourceTree = "<group>"; };
+		03EB3B4213570B340060FA56 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = SOURCE_ROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* BallDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BallDemoAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* BallDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BallDemoAppDelegate.m; sourceTree = "<group>"; };
@@ -185,14 +191,16 @@
 			isa = PBXGroup;
 			children = (
 				0373673813501FB900235B79 /* assets.h */,
+				03EB3B10135707770060FA56 /* gltext.cpp */,
+				03EB3B11135707770060FA56 /* gltext.h */,
 				0373673913501FB900235B79 /* glutils.cpp */,
 				0373673A13501FB900235B79 /* glutils.h */,
 				0373673B13501FB900235B79 /* list.h */,
+				03EB3B0E135707580060FA56 /* logging.cpp */,
 				0373673C13501FB900235B79 /* logging.h */,
 				0373673D13501FB900235B79 /* matrix.cpp */,
 				0373673E13501FB900235B79 /* matrix.h */,
 				0373673F13501FB900235B79 /* opengl.h */,
-				0373674013501FB900235B79 /* shaders.h */,
 				0373674113501FB900235B79 /* sprite.cpp */,
 				0373674213501FB900235B79 /* sprite.h */,
 				0373674313501FB900235B79 /* stage.cpp */,
@@ -339,7 +347,6 @@
 				1D3623250D0F684500981E51 /* BallDemoAppDelegate.m */,
 				28EC4C5611D54ECE0027AA9F /* BallDemoViewController.h */,
 				28EC4C5711D54ECE0027AA9F /* BallDemoViewController.mm */,
-				03A31A771350A7CE0017B3CE /* logging.mm */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -355,6 +362,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				03EB3B4213570B340060FA56 /* assets */,
 				037367631350215A00235B79 /* Box2D */,
 				0373673713501F8100235B79 /* Common */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -370,6 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				32CA4F630368D1EE00C91783 /* BallDemo_Prefix.pch */,
+				03EB3B16135708130060FA56 /* common.mm */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -450,6 +459,7 @@
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				28EC4C5A11D54ECE0027AA9F /* BallDemoViewController.xib in Resources */,
+				03EB3B4E13570B340060FA56 /* assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,7 +514,9 @@
 				037367D11350215A00235B79 /* b2Island.cpp in Sources */,
 				037367D21350215A00235B79 /* b2World.cpp in Sources */,
 				037367D31350215A00235B79 /* b2WorldCallbacks.cpp in Sources */,
-				03A31A781350A7CE0017B3CE /* logging.mm in Sources */,
+				03EB3B0F135707580060FA56 /* logging.cpp in Sources */,
+				03EB3B12135707770060FA56 /* gltext.cpp in Sources */,
+				03EB3B17135708130060FA56 /* common.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

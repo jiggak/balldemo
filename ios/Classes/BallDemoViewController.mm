@@ -44,14 +44,13 @@
    GLint width = eaglView.framebufferWidth;
    GLint height = eaglView.framebufferHeight;
 	
-   logInfo("init(%d, %d)", width, height);
-	
-   if (!stage::setupGL()) {
-      logError("sprite::setupGL failed");
+   logInfo("create(%d, %d)", width, height);
+
+   _stage = new stage(width, height, true);
+   if (!_stage->setupGL()) {
+      logError("stage::setupGL failed");
       return;
    }
-	
-   _stage = new stage(width, height, true);
     
    animating = FALSE;
    animationFrameInterval = 1;
