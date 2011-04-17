@@ -31,6 +31,9 @@ private:
 
    gltext * _text;
 
+   double step();
+   double _currentTime, _timeAccumulator;
+
 public:
    stage(const GLuint w, const GLuint h, bool rotate=false);
    ~stage();
@@ -49,7 +52,6 @@ public:
 
    void addSprite(const sprite * s);
 
-   void advance();
    void render();
 
    void touchUp(int x, int y);

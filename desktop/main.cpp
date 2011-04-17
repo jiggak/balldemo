@@ -73,7 +73,6 @@ void render()
 void update(int i)
 {
    glutTimerFunc(16, &update, 0);
-   g_stage->advance();
    glutPostRedisplay();
 }
 

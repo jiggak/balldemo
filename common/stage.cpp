@@ -9,6 +9,16 @@
 #include "gltext.h"
 #include "Box2D/Box2D.h"
 
+#include <sys/time.h>
+#include <algorithm>
+#include <cmath>
+
+static double now()
+{
+   struct timeval tv;
+   gettimeofday(&tv, NULL);
+   return tv.tv_sec + tv.tv_usec/1000000.0;
+}
 
 stage::stage(const GLuint w, const GLuint h, bool rotate)
    : _width(w), _height(h), _rotated(false)
@@ -102,6 +112,9 @@ bool stage::setupGL()
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+   _currentTime = now();
+   _timeAccumulator = 0.0;
+
    return true;
 }
 
@@ -110,15 +123,30 @@ void stage::addSprite(const sprite * s)
    _sprites.add(s);
 }
 
-void stage::advance()
+double stage::step()
 {
-   _world->Step(0.016f, 10.0f, 10.0f);
+   const double dt = 1/60.0;
+
+   double newTime = now();
+   double frameTime = newTime - _currentTime;
+   _currentTime = newTime;
+
+   _timeAccumulator += frameTime;
+
+   while (_timeAccumulator >= dt) {
+      _world->Step(dt, 10.0f, 10.0f);
+      _timeAccumulator -= dt;
+   }
+   
+   return frameTime;
 }
 
 void stage::render()
 {
    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+   double frameTime = step();
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
@@ -131,6 +159,8 @@ void stage::render()
          }
       }
    }
+
+   _text->printf(0, _height-_text->char_height(), "%d fps %f ms", int(1.0 / frameTime), frameTime);
 }
 
 void stage::touchUp(int x, int y)

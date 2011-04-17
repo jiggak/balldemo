@@ -69,7 +69,6 @@ void destroy() {
 }
 
 void drawFrame() {
-   g_stage->advance();
    g_stage->render();
 }
 

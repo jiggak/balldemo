@@ -152,7 +152,6 @@
 {
    [(EAGLView *)self.view setFramebuffer];
    
-   _stage->advance();
    _stage->render();
    
    [(EAGLView *)self.view presentFramebuffer];
