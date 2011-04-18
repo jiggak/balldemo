@@ -68,6 +68,7 @@ public:
             }
 
             delete cursor;
+            _count --;
 
             return true;
          }
