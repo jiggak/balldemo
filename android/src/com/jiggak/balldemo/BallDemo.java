@@ -1,5 +1,6 @@
 package com.jiggak.balldemo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -75,14 +76,16 @@ public class BallDemo extends Activity {
        try {
           in = getAssets().open(path);
           
-          int size = in.available();
-          byte[] buffer = new byte[size];
+          ByteArrayOutputStream data = new ByteArrayOutputStream(in.available()); 
           
-          if (in.read(buffer) != size) {
-             logError("loadResource() short read %d != %d", buffer.length, size);
+          byte[] buffer = new byte[1024];
+          int size;
+          
+          while ((size = in.read(buffer)) != -1) {
+             data.write(buffer, 0, size);
           }
           
-          return buffer;
+          return data.toByteArray();
        } catch (IOException e) {
           logError(e, "loadResource() failed");
        } finally {
