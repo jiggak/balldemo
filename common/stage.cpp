@@ -105,7 +105,7 @@ bool stage::setupGL()
       return false;
    }
 
-   _text->loadTexture("textures/font.tga");
+   _text->loadTexture("textures/font_green.tga");
 
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -127,7 +127,7 @@ double stage::step()
    _timeAccumulator += frameTime;
 
    while (_timeAccumulator >= dt) {
-      _world->Step(dt, 10.0f, 10.0f);
+      _world->Step(dt, 8.0f, 8.0f);
       _timeAccumulator -= dt;
    }
    
@@ -158,7 +158,7 @@ void stage::render()
    while (a) {
       switch (a->type) {
       case ACTION_TYPE_TOUCH_UP:
-         _sprites.append(new ball(*this, a->x, a->y, 40));
+         _sprites.append(new ball(*this, a->x, a->y, 30));
          break;
       case ACTION_TYPE_TILT:
          b2Vec2 gravity(a->x, a->y);
