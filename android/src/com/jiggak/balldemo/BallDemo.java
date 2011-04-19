@@ -1,3 +1,11 @@
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
+ */
 package com.jiggak.balldemo;
 
 import java.io.ByteArrayOutputStream;
@@ -31,9 +39,25 @@ public class BallDemo extends Activity {
       System.loadLibrary("balldemo");
    }
 
+   /**
+    * Native method called by Activity.onCreate()
+    * @param width scene width in pixels
+    * @param height scene height in pixels
+    */
    static native void nativeOnCreate(int width, int height);
+   
+   /**
+    * Native method called by Activity.onDestroy()
+    */
    static native void nativeOnDestroy();
    
+   /**
+    * Native method called during by GLSurfaceView.onSurfaceCreated().
+    * This method is non-static and inside the activity because native
+    * code needs a valid JNI pointer to the activity instance for asset
+    * loading. This method must be called on the rendering thread since
+    * a valid OpenGL context is required.
+    */
    public native void setupGL();
    
    private SurfaceView view;
@@ -53,6 +77,11 @@ public class BallDemo extends Activity {
    private SensorManager _sensorManager;
    private Sensor _accelerometer;
    
+   /**
+    * This method is called from native code to load assets from the APK.
+    * @param path relative path inside apk for of asset to load
+    * @return byte array containing asset data or null if asset not found
+    */
    public byte[] loadResource(String path) {
       logInfo("loadResource(%s)", path);
 
@@ -94,11 +123,9 @@ public class BallDemo extends Activity {
       _accelerometer = _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
       Display display = getWindowManager().getDefaultDisplay();
-      int width = display.getWidth();
-      int height = display.getHeight();
 
       // create engine in native code
-      nativeOnCreate(width, height);
+      nativeOnCreate(display.getWidth(), display.getHeight());
 
       setContentView(view = new SurfaceView(this));
    }
@@ -126,6 +153,22 @@ public class BallDemo extends Activity {
 }
 
 class SurfaceView extends GLSurfaceView implements SensorEventListener {
+   /**
+    * Native method for queuing input actions. This methods should be called
+    * on the rendering thread to avoid a race condition with the render loop
+    * (who consumes the actions). The type parameter must be one of:
+    * 
+    * <ul>
+    * <li>ACTION_TYPE_TOUCH_DOWN (0)</li>
+    * <li>ACTION_TYPE_TOUCH_UP (1)</li>
+    * <li>ACTION_TYPE_TOUCH_MOVE (2)</li>
+    * <li>ACTION_TYPE_TILT (4)</li>
+    * </ul>
+    * 
+    * @param type action type
+    * @param x x position
+    * @param y y position
+    */
    static native void queueAction(int type, float x, float y);
    
    public SurfaceView(BallDemo activity) {
@@ -237,10 +280,12 @@ class SurfaceView extends GLSurfaceView implements SensorEventListener {
    
    public void onSensorChanged(SensorEvent event) {
       final int type = 3;;
+      
+      // screen is oriented in landscape so swap x/y
       final float x = event.values[1];
       final float y = -event.values[0];
       
-      // execute touch events on the rendering thread
+      // execute sensor events on the rendering thread
       queueEvent(new Runnable() {
          public void run() {
             queueAction(type, x, y);
