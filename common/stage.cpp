@@ -36,9 +36,7 @@ stage::stage(const GLuint w, const GLuint h, bool rotate)
       _projection.translate(hw, hh, 0.0f);
       _projection.rotate(PI/2.0f, 0.0f, 0.0f, 1.0f);
 
-      GLuint t = _width;
-      _width = _height;
-      _height = t;
+      std::swap(_width, _height);
 
       _projection.translate(-hh, -hw, 0.0f);
    }
