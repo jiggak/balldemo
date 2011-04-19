@@ -11,7 +11,6 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -32,13 +31,11 @@ public class BallDemo extends Activity {
       System.loadLibrary("balldemo");
    }
 
-   public native void nativeOnCreate(int width, int height);
-   public native void nativeOnDestroy();
+   static native void nativeOnCreate(int width, int height);
+   static native void nativeOnDestroy();
    
-   public static native void load();
-   public static native void drawFrame();
-   public static native void queueAction(int type, float x, float y);
-
+   public native void setupGL();
+   
    private SurfaceView view;
    
    public static void logInfo(String fmt, Object... args) {
@@ -103,21 +100,22 @@ public class BallDemo extends Activity {
       // create engine in native code
       nativeOnCreate(width, height);
 
-      setContentView(view = new SurfaceView(getApplication()));
+      setContentView(view = new SurfaceView(this));
    }
 
    @Override
    protected void onPause() {
       super.onPause();
-      _sensorManager.unregisterListener(view);
       view.onPause();
+      _sensorManager.unregisterListener(view);
    }
 
    @Override
    protected void onResume() {
       super.onResume();
-      _sensorManager.registerListener(view, _accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
       view.onResume();
+      _sensorManager.registerListener(view, _accelerometer,
+            SensorManager.SENSOR_DELAY_NORMAL);
    }
    
    @Override
@@ -128,8 +126,10 @@ public class BallDemo extends Activity {
 }
 
 class SurfaceView extends GLSurfaceView implements SensorEventListener {
-   public SurfaceView(Context context) {
-      super(context);
+   static native void queueAction(int type, float x, float y);
+   
+   public SurfaceView(BallDemo activity) {
+      super(activity);
       
       // need translucent since textures have alpha channel
       getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -204,7 +204,7 @@ class SurfaceView extends GLSurfaceView implements SensorEventListener {
       });
       
       // create renderer that simply passes control into native code
-      setRenderer(new SurfaceViewRenderer());
+      setRenderer(new SurfaceViewRenderer(activity));
    }
 
    public boolean onTouchEvent(MotionEvent event) {
@@ -226,7 +226,7 @@ class SurfaceView extends GLSurfaceView implements SensorEventListener {
       // execute touch events on the rendering thread
       queueEvent(new Runnable() {
          public void run() {
-            BallDemo.queueAction(type, x, y);
+            queueAction(type, x, y);
          }
       });
 
@@ -243,20 +243,28 @@ class SurfaceView extends GLSurfaceView implements SensorEventListener {
       // execute touch events on the rendering thread
       queueEvent(new Runnable() {
          public void run() {
-            BallDemo.queueAction(type, x, y);
+            queueAction(type, x, y);
          }
       });
    }
 }
 
 class SurfaceViewRenderer implements GLSurfaceView.Renderer {
-    public void onDrawFrame(GL10 gl) {
-       BallDemo.drawFrame();
-    }
+   public static native void drawFrame();
+   
+   private BallDemo activity;
+   
+   public SurfaceViewRenderer(BallDemo activity) {
+      this.activity = activity;
+   }
 
-    public void onSurfaceChanged(GL10 gl, int width, int height) { }
+   public void onDrawFrame(GL10 gl) {
+      drawFrame();
+   }
 
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-       BallDemo.load();
-    }
- }
+   public void onSurfaceChanged(GL10 gl, int width, int height) { }
+
+   public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+      activity.setupGL();
+   }
+}

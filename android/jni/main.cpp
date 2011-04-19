@@ -53,57 +53,52 @@ void freeAsset(asset_t * asset) {
    delete asset;
 }
 
-void create(GLuint width, GLuint height) {
-   logInfo("create(%d, %d)", width, height);
+extern "C" {
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnCreate(JNIEnv* env, jobject obj, jint width, jint height);
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnDestroy(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_setupGL(JNIEnv* env, jobject obj);
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_SurfaceView_queueAction(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y);
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_SurfaceViewRenderer_drawFrame(JNIEnv* env, jobject obj);
+};
+
+JNIEXPORT void
+JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnCreate
+(JNIEnv* env, jobject obj, jint width, jint height)
+{
+   logInfo("onCreate(%d, %d)", width, height);
    g_stage = new stage(width, height);
 }
 
-void load() {
+JNIEXPORT void
+JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnDestroy
+(JNIEnv* env, jobject obj)
+{
+   logInfo("onDestroy()");
+   delete g_stage;
+}
+
+JNIEXPORT void
+JNICALL Java_com_jiggak_balldemo_BallDemo_setupGL
+(JNIEnv* env, jobject obj)
+{
+   g_activity = obj;
+   g_env = env;
+
    if (!g_stage->setupGL()) {
       logError("stage::setupGL failed");
    }
 }
 
-void destroy() {
-   delete g_stage;
-}
-
-void drawFrame() {
-   g_stage->render();
-}
-
-extern "C" {
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnCreate(JNIEnv* env, jobject obj, jint width, jint height);
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnDestroy(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_load(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_drawFrame(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_queueAction(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y);
-};
-
 JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnCreate(JNIEnv* env, jobject obj, jint width, jint height) {
-   create(width, height);
-
-   g_env = env;
-   g_activity = obj;
-}
-
-JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnDestroy(JNIEnv* env, jobject obj) {
-   destroy();
-}
-
-JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_load(JNIEnv* env, jobject obj) {
-   load();
-}
-
-JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_drawFrame(JNIEnv* env, jobject obj) {
-   drawFrame();
-}
-
-JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_queueAction(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y) {
+JNICALL Java_com_jiggak_balldemo_SurfaceView_queueAction
+(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y)
+{
    g_stage->queueAction((action_type_t)type, x, y);
+}
+
+JNIEXPORT void
+JNICALL Java_com_jiggak_balldemo_SurfaceViewRenderer_drawFrame
+(JNIEnv* env, jobject obj)
+{
+   g_stage->render();
 }
