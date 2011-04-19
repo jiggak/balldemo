@@ -72,16 +72,12 @@ void drawFrame() {
    g_stage->render();
 }
 
-void touchUp(int x, int y) {
-   g_stage->touchUp(x, y);
-}
-
 extern "C" {
 JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnCreate(JNIEnv* env, jobject obj, jint width, jint height);
 JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_nativeOnDestroy(JNIEnv* env, jobject obj);
 JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_load(JNIEnv* env, jobject obj);
 JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_drawFrame(JNIEnv* env, jobject obj);
-JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_touchUp(JNIEnv* env, jobject obj, jint x, jint y);
+JNIEXPORT void JNICALL Java_com_jiggak_balldemo_BallDemo_queueAction(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y);
 };
 
 JNIEXPORT void
@@ -108,6 +104,6 @@ JNICALL Java_com_jiggak_balldemo_BallDemo_drawFrame(JNIEnv* env, jobject obj) {
 }
 
 JNIEXPORT void
-JNICALL Java_com_jiggak_balldemo_BallDemo_touchUp(JNIEnv* env, jobject obj, jint x, jint y) {
-   touchUp(x, y);
+JNICALL Java_com_jiggak_balldemo_BallDemo_queueAction(JNIEnv* env, jobject obj, jint type, jfloat x, jfloat y) {
+   g_stage->queueAction((action_type_t)type, x, y);
 }

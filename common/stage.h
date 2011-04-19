@@ -16,6 +16,19 @@
 // we need a ratio to convert back and forth to screen units
 #define UNIT_RATIO 40.0f
 
+typedef enum {
+   ACTION_TYPE_TOUCH_DOWN,
+   ACTION_TYPE_TOUCH_UP,
+   ACTION_TYPE_TOUCH_MOVE,
+   ACTION_TYPE_TILT
+} action_type_t;
+
+typedef struct action_t {
+   action_t(action_type_t t_, float x_, float y_) : type(t_), x(x_), y(y_) { }
+   action_type_t type;
+   float x, y;
+} action_t;
+
 class gltext;
 class sprite;
 class b2World;
@@ -34,6 +47,8 @@ private:
    double step();
    double _currentTime, _timeAccumulator;
 
+   list<action_t> _actions;
+
 public:
    stage(const GLuint w, const GLuint h, bool rotate=false);
    ~stage();
@@ -50,11 +65,9 @@ public:
 
    inline b2World* world() const { return _world; }
 
-   void addSprite(const sprite * s);
+   void queueAction(action_type_t type, float x, float y);
 
    void render();
-
-   void touchUp(int x, int y);
 };
 
 #endif /* STAGE_H_ */

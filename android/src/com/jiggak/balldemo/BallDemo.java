@@ -13,6 +13,10 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,9 +37,9 @@ public class BallDemo extends Activity {
    
    public static native void load();
    public static native void drawFrame();
-   public static native void touchUp(int x, int y);
+   public static native void queueAction(int type, float x, float y);
 
-   private GLSurfaceView view;
+   private SurfaceView view;
    
    public static void logInfo(String fmt, Object... args) {
       Log.i(LOGTAG, String.format(fmt, args));
@@ -48,6 +52,37 @@ public class BallDemo extends Activity {
    public static void logError(String fmt, Object... args) {
       Log.e(LOGTAG, String.format(fmt, args));
    }
+   
+   private SensorManager _sensorManager;
+   private Sensor _accelerometer;
+   
+   public byte[] loadResource(String path) {
+      logInfo("loadResource(%s)", path);
+
+      InputStream in = null;
+
+      try {
+         in = getAssets().open(path);
+
+         ByteArrayOutputStream data = new ByteArrayOutputStream(in.available());
+
+         byte[] buffer = new byte[1024];
+         int size;
+
+         while ((size = in.read(buffer)) != -1) {
+            data.write(buffer, 0, size);
+         }
+
+         return data.toByteArray();
+      } catch (IOException e) {
+         logError(e, "loadResource() failed");
+      } finally {
+         try { in.close(); }
+         catch (IOException e) { }
+      }
+
+      return null;
+   }
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +92,9 @@ public class BallDemo extends Activity {
 
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+      _sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+      _accelerometer = _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
       Display display = getWindowManager().getDefaultDisplay();
       int width = display.getWidth();
@@ -68,43 +106,17 @@ public class BallDemo extends Activity {
       setContentView(view = new SurfaceView(getApplication()));
    }
 
-   public byte[] loadResource(String path) {
-       logInfo("loadResource(%s)", path);
-       
-       InputStream in = null;
-       
-       try {
-          in = getAssets().open(path);
-          
-          ByteArrayOutputStream data = new ByteArrayOutputStream(in.available()); 
-          
-          byte[] buffer = new byte[1024];
-          int size;
-          
-          while ((size = in.read(buffer)) != -1) {
-             data.write(buffer, 0, size);
-          }
-          
-          return data.toByteArray();
-       } catch (IOException e) {
-          logError(e, "loadResource() failed");
-       } finally {
-          try { in.close(); }
-          catch (IOException e) { }
-       }
-       
-       return null;
-    }
-
    @Override
    protected void onPause() {
       super.onPause();
+      _sensorManager.unregisterListener(view);
       view.onPause();
    }
 
    @Override
    protected void onResume() {
       super.onResume();
+      _sensorManager.registerListener(view, _accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
       view.onResume();
    }
    
@@ -115,9 +127,7 @@ public class BallDemo extends Activity {
    }
 }
 
-class SurfaceView extends GLSurfaceView {
-   private SurfaceViewRenderer renderer;
-
+class SurfaceView extends GLSurfaceView implements SensorEventListener {
    public SurfaceView(Context context) {
       super(context);
       
@@ -194,21 +204,48 @@ class SurfaceView extends GLSurfaceView {
       });
       
       // create renderer that simply passes control into native code
-      setRenderer(renderer = new SurfaceViewRenderer());
+      setRenderer(new SurfaceViewRenderer());
    }
 
    public boolean onTouchEvent(MotionEvent event) {
-      final int x = (int) event.getX();
-      final int y = (int) event.getY();
+      final int type;
+      switch (event.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+         type = 0; break;
+      case MotionEvent.ACTION_UP:
+         type = 1; break;
+      case MotionEvent.ACTION_MOVE:
+         type = 2; break;
+      default:
+         return false;
+      }
+      
+      final float x = event.getX();
+      final float y = event.getY();
 
       // execute touch events on the rendering thread
       queueEvent(new Runnable() {
          public void run() {
-            renderer.handleTouchUp(x, y);
+            BallDemo.queueAction(type, x, y);
          }
       });
 
-      return false;
+      return true;
+   }
+   
+   public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+   
+   public void onSensorChanged(SensorEvent event) {
+      final int type = 3;;
+      final float x = event.values[1];
+      final float y = -event.values[0];
+      
+      // execute touch events on the rendering thread
+      queueEvent(new Runnable() {
+         public void run() {
+            BallDemo.queueAction(type, x, y);
+         }
+      });
    }
 }
 
@@ -221,9 +258,5 @@ class SurfaceViewRenderer implements GLSurfaceView.Renderer {
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
        BallDemo.load();
-    }
-
-    public void handleTouchUp(int x, int y) {
-       BallDemo.touchUp(x, y);
     }
  }

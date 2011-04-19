@@ -79,7 +79,7 @@ void update(int i)
 void mouse(int button, int state, int x, int y)
 {
    if (state == 1) {
-      g_stage->touchUp(x, y);
+      g_stage->queueAction(ACTION_TYPE_TOUCH_UP, x, y);
    }
 }
 

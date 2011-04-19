@@ -118,11 +118,6 @@ bool stage::setupGL()
    return true;
 }
 
-void stage::addSprite(const sprite * s)
-{
-   _sprites.add(s);
-}
-
 double stage::step()
 {
    const double dt = 1/60.0;
@@ -141,12 +136,43 @@ double stage::step()
    return frameTime;
 }
 
+void stage::queueAction(action_type_t type, float x, float y)
+{
+   action_t *action = new action_t(type, x, y);
+
+   if (type != ACTION_TYPE_TILT) {
+      if (_rotated) {
+         std::swap(action->x, action->y);
+      } else {
+         action->y = _height - action->y;
+      }
+   }
+
+   _actions.append((const action_t *)action);
+}
+
 void stage::render()
 {
    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-   double frameTime = step();
+   const action_t * a = _actions.shift();
+   while (a) {
+      switch (a->type) {
+      case ACTION_TYPE_TOUCH_UP:
+         _sprites.append(new ball(*this, a->x, a->y, 40));
+         break;
+      case ACTION_TYPE_TILT:
+         b2Vec2 gravity(a->x, a->y);
+         _world->SetGravity(gravity);
+         break;
+      }
+
+      delete a;
+      a = _actions.shift();
+   }
+
+   double ftime = step();
 
    list<sprite>::cursor c = _sprites.iterate();
    while (c.more()) {
@@ -160,18 +186,6 @@ void stage::render()
       }
    }
 
-   _text->printf(0, _height-_text->char_height(), "%d fps %f ms", int(1.0 / frameTime), frameTime);
-}
-
-void stage::touchUp(int x, int y)
-{
-   if (_rotated) {
-      int t = x;
-      x = y;
-      y = t;
-   } else {
-      y = _height - y;
-   }
-
-   this->addSprite(new ball(*this, x, y, 40));
+   _text->printf(0, _height-_text->char_height(), "%d fps, %f s, %d sprites",
+         int(1.0 / ftime), ftime, _sprites.count());
 }

@@ -103,7 +103,7 @@
 {
    UITouch *touch = [[event allTouches] anyObject];
    CGPoint point = [touch locationInView:self.view];
-   _stage->touchUp(point.x, point.y);
+   _stage->queueAction(ACTION_TYPE_TOUCH_UP, point.x, point.y);
 }
 
 - (NSInteger)animationFrameInterval

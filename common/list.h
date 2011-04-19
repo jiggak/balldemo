@@ -34,7 +34,7 @@ public:
       }
    }
 
-   void add(const T * value) {
+   void append(const T * value) {
       if (!_first) {
          _last = _first = new node(value);
       } else {
@@ -77,6 +77,24 @@ public:
       }
 
       return false;
+   }
+
+   const T * shift() {
+      if (_first) {
+         node * n = _first;
+         const T * v = n->value;
+
+         _first = _first->next;
+         if (_first) {
+            _first->previous = 0;
+         }
+
+         delete n;
+
+         return v;
+      }
+
+      return 0;
    }
 
    int count() const {
