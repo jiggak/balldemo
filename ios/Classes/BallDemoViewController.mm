@@ -55,6 +55,9 @@
    animating = FALSE;
    animationFrameInterval = 1;
    self.displayLink = nil;
+   
+   [UIAccelerometer sharedAccelerometer].updateInterval = 1.0 / 10.0;
+   [UIAccelerometer sharedAccelerometer].delegate = self;
 }
 
 - (void)dealloc
@@ -104,6 +107,17 @@
    UITouch *touch = [[event allTouches] anyObject];
    CGPoint point = [touch locationInView:self.view];
    _stage->queueAction(ACTION_TYPE_TOUCH_UP, point.x, point.y);
+}
+
+- (void)accelerometer:(UIAccelerometer*)accelerometer didAccelerate:(UIAcceleration*)acceleration
+{
+   // accelerometer is in the range -1 <> 1; convert to gravity
+   // also swap x/y since stage is performing rotation
+   // ... and for some reason invert y
+   float x = acceleration.y * -9.81f;
+   float y = acceleration.x * 9.81f;
+   
+   _stage->queueAction(ACTION_TYPE_TILT, x, y);
 }
 
 - (NSInteger)animationFrameInterval

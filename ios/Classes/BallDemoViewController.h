@@ -12,7 +12,7 @@
 struct stage;
 typedef struct stage stage;
 
-@interface BallDemoViewController : UIViewController
+@interface BallDemoViewController : UIViewController <UIAccelerometerDelegate>
 {
    EAGLContext *context;
    stage *_stage;
