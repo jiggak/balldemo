@@ -6,15 +6,9 @@
  */
 
 #ifdef ANDROID
-
-#include <GLES2/gl2.h>
-
+  #include <GLES2/gl2.h>
 #elif __IPHONE_OS_VERSION_MIN_REQUIRED
-
-#include <OpenGLES/ES2/gl.h>
-
+  #include <OpenGLES/ES2/gl.h>
 #else
-
-#include <GL/glew.h>
-
+  #include <GL/glew.h>
 #endif

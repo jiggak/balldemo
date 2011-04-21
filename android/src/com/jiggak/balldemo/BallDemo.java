@@ -79,7 +79,7 @@ public class BallDemo extends Activity {
    
    /**
     * This method is called from native code to load assets from the APK.
-    * @param path relative path inside apk for of asset to load
+    * @param path relative path inside apk of asset to load
     * @return byte array containing asset data or null if asset not found
     */
    public byte[] loadResource(String path) {
