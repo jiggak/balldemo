@@ -11,7 +11,7 @@
 #define TEX_H_
 
 typedef struct tex_t {
-   uint width, height;
+   unsigned int width, height;
    uint8_t *pixels;
 } tex_t;
 

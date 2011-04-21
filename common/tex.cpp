@@ -43,7 +43,7 @@ tex_t* texLoadTGA(const asset_t * asset)
    texture->width = header->width;
    texture->height = header->height;
 
-   uint bufsz = header->width * header->height * (header->bits_per_pixel/8);
+   int bufsz = header->width * header->height * (header->bits_per_pixel/8);
    texture->pixels = new uint8_t[bufsz];
 
    if (bufsz > (asset->size - cursor)) {
@@ -55,7 +55,7 @@ tex_t* texLoadTGA(const asset_t * asset)
    memcpy(texture->pixels, asset->data + cursor, bufsz);
 
    // TGA pixel data is BGR packed, convert to RGB
-   for (uint i=0; i<bufsz; i+=4) {
+   for (int i=0; i<bufsz; i+=4) {
       uint8_t b = texture->pixels[i];
       texture->pixels[i] = texture->pixels[i+2];
       texture->pixels[i+2] = b;
