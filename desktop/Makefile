@@ -1,13 +1,17 @@
 UNAME=$(shell uname)
 CC=g++
 
-ifeq ($(UNAME), Linux)
+ifeq ($(UNAME),Linux)
    LDFLAGS=-lGL -lGLEW -lglut
    CFLAGS=-g -Wall -I../common
 endif
-ifeq ($(UNAME), Darwin)
+ifeq ($(UNAME),Darwin)
    LDFLAGS=-framework GLUT -framework OpenGL -L/opt/local/lib -lGLEW
    CFLAGS=-g -Wall -I../common -I/opt/local/include
+endif
+ifneq (,$(findstring MINGW,$(UNAME)))
+   LDFLAGS=-lglew32 -lglut -lglu32 -lopengl32
+   CFLAGS=-g -Wall -I../common
 endif
 
 OUTPUT=balldemo
@@ -62,8 +66,11 @@ OBJ=$(SRC:.cpp=.o)
 
 all: $(SRC) $(OUTPUT)
 
+# mingw for some crazzy reason has a ton of linker errors if the object files
+# appear after LDFLAGS, so swap them (doesn't seems to effect Linux or OSX)
+
 $(OUTPUT): $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJ) -o $@
+	$(CC) $(OBJ) $(LDFLAGS) -o $@
 
 .cpp.o:
 	$(CC) -c $(CFLAGS) $< -o $@
