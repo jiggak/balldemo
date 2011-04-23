@@ -16,7 +16,7 @@
 #include <cmath>
 
 
-// High precision time function returns time in seconds.
+// High precision time function returns current time in seconds.
 static double now()
 {
    struct timeval tv;
@@ -161,14 +161,14 @@ void stage::queueAction(action_type_t type, float x, float y)
 
 void stage::render()
 {
-   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+   glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
    const action_t * a = _actions.shift();
    while (a) {
       switch (a->type) {
       case ACTION_TYPE_TOUCH_UP:
-         _sprites.append(new ball(*this, a->x, a->y, 30));
+         _sprites.append(new ball(*this, a->x, a->y, 32));
          break;
       case ACTION_TYPE_TILT:
          b2Vec2 gravity(a->x, a->y);
@@ -194,6 +194,6 @@ void stage::render()
       }
    }
 
-   _text->printf(0, _height-_text->char_height(), "%d fps, %f s, %d sprites",
+   _text->printf(0, _height-_text->char_height(), "%d fps, %.3f s, %d sprites",
          int(1.0 / ftime), ftime, _sprites.count());
 }
