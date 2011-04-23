@@ -1,8 +1,10 @@
 /*
- * stage.cpp
- *
- *  Created on: Apr 1, 2011
- *      Author: josh
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
 #include "stage.h"
 #include "sprite.h"
@@ -13,12 +15,15 @@
 #include <algorithm>
 #include <cmath>
 
+
+// High precision time function returns time in seconds.
 static double now()
 {
    struct timeval tv;
    gettimeofday(&tv, NULL);
    return tv.tv_sec + tv.tv_usec/1000000.0;
 }
+
 
 stage::stage(const GLuint w, const GLuint h, bool rotate)
    : _width(w), _height(h), _rotated(false)
@@ -46,6 +51,9 @@ stage::stage(const GLuint w, const GLuint h, bool rotate)
 
    // create world object that will put objects to "sleep" while at rest
    _world = new b2World(gravity, true);
+
+   // disable auto-clear forces, we will clear them manually after each frame
+   _world->SetAutoClearForces(false);
 
    b2BodyDef groundBodyDef;
    groundBodyDef.position.Set(0,0);
@@ -127,10 +135,12 @@ double stage::step()
    _timeAccumulator += frameTime;
 
    while (_timeAccumulator >= dt) {
-      _world->Step(dt, 8.0f, 8.0f);
+      _world->Step(dt, 10.0f, 10.0f);
       _timeAccumulator -= dt;
    }
    
+   _world->ClearForces();
+
    return frameTime;
 }
 

@@ -1,29 +1,55 @@
 /*
- * list.h
- *
- *  Created on: Apr 7, 2011
- *      Author: josh
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
-
 #ifndef LIST_H_
 #define LIST_H_
 
+///
+/// Linked list template class. The list stores pointers to values. All methods
+/// that remove nodes from the list require the caller to free the values.
+///
 template <typename T>
 class list {
 private:
+   /// Node of the linked list.
    struct node {
       const T * value;
-      node * next;
-      node * previous;
+      node * next, * previous;
 
+      /// Create node from value with next and previous set to NULL.
       node(const T * val) : value(val), next(0), previous(0) { }
-   } * _first;
+   };
 
-   struct node * _last;
+   struct node * _first, * _last;
 
    int _count;
 
 public:
+   /// Class for iterating over the list contents.
+   class cursor {
+   private:
+      struct node * _node;
+
+   public:
+      cursor(struct node * n) : _node(n) { }
+
+      /// Returns true if next() method will return another value.
+      /// @see next()
+      inline bool more() { return _node != 0; }
+
+      /// Returns value at current cursor position and then advances the cursor.
+      const T * next() {
+         const T * retval = _node->value;
+         _node = _node->next;
+         return retval;
+      }
+   };
+
    list() : _first(0), _last(0), _count(0) { }
 
    ~list() {
@@ -34,6 +60,8 @@ public:
       }
    }
 
+   /// Append element to list.
+   /// @param value pointer to element to add
    void append(const T * value) {
       if (!_first) {
          _last = _first = new node(value);
@@ -46,6 +74,9 @@ public:
       _count ++;
    }
 
+   /// Remove element from list.
+   /// @param value pointer to element to remove
+   /// @return true if element was found and removed
    bool remove(const T * value) {
       node * cursor = _first;
 
@@ -79,6 +110,8 @@ public:
       return false;
    }
 
+   /// Remove element from front of the list and return the result.
+   /// @return element removed from front of list, or NULL if list was empty
    const T * shift() {
       if (_first) {
          node * n = _first;
@@ -97,28 +130,10 @@ public:
       return 0;
    }
 
-   int count() const {
-      return _count;
-   }
+   /// Returns number of elements in the list.
+   inline int count() const { return _count; }
 
-   class cursor {
-   private:
-      struct node * _node;
-
-   public:
-      cursor(struct node * n) : _node(n) { }
-
-      inline bool more() {
-         return _node != 0;
-      }
-
-      const T * next() {
-         const T * retval = _node->value;
-         _node = _node->next;
-         return retval;
-      }
-   };
-
+   /// Create and return a cursor for iterating over the list.
    cursor iterate() {
       cursor c(_first);
       return c;

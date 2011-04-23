@@ -1,13 +1,32 @@
 /*
- * tex.cpp
- *
- *  Created on: Apr 1, 2011
- *      Author: josh
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
 #include "tex.h"
 #include "assets.h"
 #include "logging.h"
 #include <cstring>
+
+
+typedef struct {
+   uint8_t id_length;
+   uint8_t color_map_type;
+   uint8_t data_type_code;
+   uint16_t color_map_origin;
+   uint16_t color_map_length;
+   uint8_t color_map_depth;
+   uint16_t x_origin;
+   uint16_t y_origin;
+   uint16_t width;
+   uint16_t height;
+   uint8_t bits_per_pixel;
+   uint8_t image_descriptor;
+} __attribute__((__packed__)) tga_header_t;
+
 
 tex_t* texLoadTGA(const char * path)
 {

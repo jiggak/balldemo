@@ -1,8 +1,10 @@
 /*
- * tex.h
- *
- *  Created on: Apr 1, 2011
- *      Author: josh
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
 #include <sys/types.h>
 #include <stdint.h>
@@ -10,32 +12,34 @@
 #ifndef TEX_H_
 #define TEX_H_
 
+///
+/// 2D texture struct. Textures are currently limited to 32bit uncompressed
+/// RGBA format.
+///
 typedef struct tex_t {
    unsigned int width, height;
    uint8_t *pixels;
 } tex_t;
 
-struct asset_t;
-
-typedef struct {
-   uint8_t id_length;
-   uint8_t color_map_type;
-   uint8_t data_type_code;
-   uint16_t color_map_origin;
-   uint16_t color_map_length;
-   uint8_t color_map_depth;
-   uint16_t x_origin;
-   uint16_t y_origin;
-   uint16_t width;
-   uint16_t height;
-   uint8_t bits_per_pixel;
-   uint8_t image_descriptor;
-} __attribute__((__packed__)) tga_header_t;
-
+///
+/// Load TGA file from relative asset path. Textures created by this function
+/// must be destroyed with texFree().
+/// @param path relative asset path to TGA file
+/// @return texture struct or NULL if asset not found
+///
 tex_t* texLoadTGA(const char * path);
 
-tex_t* texLoadTGA(const asset_t * asset);
+///
+/// Load TGA file from loaded asset. Textures created by this function must be
+/// destroyed with texFree().
+/// @param asset loaded asset
+/// @return texture struct or NULL if TGA file is invalid
+///
+tex_t* texLoadTGA(const struct asset_t * asset);
 
+///
+/// Free memory used by texture.
+///
 void texFree(tex_t * texture);
 
 #endif /* TEX_H_ */

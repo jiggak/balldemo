@@ -1,8 +1,10 @@
 /*
- * glutils.cpp
- *
- *  Created on: Mar 31, 2011
- *      Author: josh
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
 #include "glutils.h"
 
@@ -11,10 +13,9 @@
 #include "assets.h"
 #include "tex.h"
 
-
 void glutilCheckError(const char* op) {
    for (GLint error = glGetError(); error; error = glGetError()) {
-      logError("%s() glError (0x%x)\n", op, error);
+      logError("%s() glError (0x%x)", op, error);
    }
 }
 
@@ -39,7 +40,7 @@ GLuint glutilLoadShader(GLenum shaderType, const asset_t * source) {
          char* buf = (char*) malloc(infoLen);
          if (buf) {
             glGetShaderInfoLog(shader, infoLen, NULL, buf);
-            logError("Could not compile shader %d:\n%s\n", shaderType, buf);
+            logError("Could not compile shader %d:\n%s", shaderType, buf);
             free(buf);
          }
 
@@ -96,7 +97,7 @@ GLuint glutilCreateProgram(const char* vsPath, const char* fsPath) {
          char* buf = (char*) malloc(bufLength);
          if (buf) {
             glGetProgramInfoLog(program, bufLength, NULL, buf);
-            logError("Could not link program:\n%s\n", buf);
+            logError("Could not link program:\n%s", buf);
             free(buf);
          }
       }
