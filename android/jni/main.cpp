@@ -1,3 +1,11 @@
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
+ */
 #include <jni.h>
 #include <android/log.h>
 
@@ -9,11 +17,15 @@
 
 #define LOG_TAG "balldemo"
 
+// pointer to JNI interface and BallDemo activity instance
 JNIEnv *g_env;
 jobject g_activity;
 
 stage *g_stage = NULL;
 
+///
+/// Implementation of the logv() function that calls __android_log_vprint().
+///
 void logv(log_level_t level, const char *fmt, va_list args) {
    android_LogPriority l;
    switch (level) {
@@ -26,6 +38,11 @@ void logv(log_level_t level, const char *fmt, va_list args) {
    __android_log_vprint(l, LOG_TAG, fmt, args);
 }
 
+///
+/// Implementation of the loadAsset() function that calls back into Java
+/// to use Android's asset loading API. This function requires that the
+/// global pointers g_env and g_activity are valid.
+///
 asset_t * loadAsset(const char * path) {
    jstring file = g_env->NewStringUTF(path);
 
@@ -48,6 +65,7 @@ asset_t * loadAsset(const char * path) {
    return NULL;
 }
 
+/// Delete assets data then the asset struct.
 void freeAsset(asset_t * asset) {
    delete asset->data;
    delete asset;
@@ -81,6 +99,8 @@ JNIEXPORT void
 JNICALL Java_com_jiggak_balldemo_BallDemo_setupGL
 (JNIEnv* env, jobject obj)
 {
+   // stage::setupGL() will call loadAsset() so we need to make sure the global
+   // pointer to the BallDemo activity and JNI interface are valid
    g_activity = obj;
    g_env = env;
 

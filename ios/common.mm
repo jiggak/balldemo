@@ -1,16 +1,19 @@
 /*
- *  common.mm
- *  BallDemo
- *
- *  Created by Josh Kropf on 11-04-09.
- *  Copyright 2011 slashdev.ca. All rights reserved.
- *
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
  */
-
 #import <Foundation/Foundation.h>
 #include "logging.h"
 #include "assets.h"
 
+///
+/// Implementation of the logv() function that calls NSLog(). Since NSLog
+/// doesn't have severity level output is prefixed with "ERROR" or "INFO".
+///
 void logv(log_level_t level, const char *cfmt, va_list args) {
    NSString *prefix;
    switch (level) {
@@ -24,6 +27,10 @@ void logv(log_level_t level, const char *cfmt, va_list args) {
    NSLogv([prefix stringByAppendingString:fmt], args);
 }
 
+///
+/// Implementation of the loadAsset() function that opens and reads files
+/// inside the application bundle.
+///
 asset_t * loadAsset(const char * cpath) {
    logInfo("loadAsset(%s)", cpath);
    
@@ -50,6 +57,7 @@ asset_t * loadAsset(const char * cpath) {
    return asset;
 }
 
+/// Delete assets data then the asset struct.
 void freeAsset(asset_t * asset) {
    delete asset->data;
    delete asset;

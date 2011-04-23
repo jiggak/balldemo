@@ -1,11 +1,11 @@
-//
-//  BallDemoViewController.m
-//  BallDemo
-//
-//  Created by Josh Kropf on 11-04-09.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <josh@slashdev.ca> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Josh Kropf
+ * ----------------------------------------------------------------------------
+ */
 #import <QuartzCore/QuartzCore.h>
 
 #import "BallDemoViewController.h"
@@ -127,10 +127,12 @@
 
 - (void)setAnimationFrameInterval:(NSInteger)frameInterval
 {
-   /*
-    Frame interval defines how many display frames must pass between each time the display link fires.
-    The display link will only fire 30 times a second when the frame internal is two on a display that refreshes 60 times a second. The default frame interval setting of one will fire 60 times a second when the display refreshes at 60 times a second. A frame interval setting of less than one results in undefined behavior.
-    */
+   // Frame interval defines how many display frames must pass between each
+   // time the display link fires. The display link will only fire 30 times
+   // a second when the frame internal is two on a display that refreshes
+   // 60 times a second. The default frame interval setting of one will
+   // fire 60 times a second when the display refreshes at 60 times a second.
+   // A frame interval setting of less than one results in undefined behavior.
    if (frameInterval >= 1) {
       animationFrameInterval = frameInterval;
       
