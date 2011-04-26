@@ -1,0 +1,6 @@
+http://www.slashdev.ca/2011/04/26/sample-portable-mobile-game-code/
+
+The eclipse CDT project files for android refernce include paths inside the NDK
+and use an environment variable to resolve them. Set ANDROID_NDK to the
+directory where the NDK is installed and also add it to the PATH so that eclipse
+can call the ndk-build script.
