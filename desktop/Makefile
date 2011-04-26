@@ -10,6 +10,8 @@ ifeq ($(UNAME),Darwin)
    CFLAGS=-g -Wall -I../common -I/opt/local/include
 endif
 ifneq (,$(findstring MINGW,$(UNAME)))
+   # to distribute .exe add -static-libgcc -static-libstdc++ flags to avoid
+   # having to distribute gcc and stdc++ .dll's
    LDFLAGS=-lglew32 -lglut -lglu32 -lopengl32
    CFLAGS=-g -Wall -I../common
 endif
